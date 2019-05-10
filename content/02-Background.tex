@@ -1,0 +1,119 @@
+% Teori om teknologi, læring, software osv.
+\section{Background}
+
+This section will provide background information about the technologies and software utilized in this project, as well as theory addressing learning, learning with multimedia, and enjoyment in games. These will provide the foundation for the planning and design choices made in this project. 
+
+\subsection{Virtual Reality}
+
+Virtual reality(VR) has many definitions, but in the context of this project VR refers to a virtual environment with spatial and orientation tracking of a head mounted display(HMD) and controllers. In VR the virtual environment's visuals are 100\% computer graphics, while the interaction with these generated visuals are done through the movement of the physical body of the user. VR is also a part of the term XR, or Cross Reality, which includes VR, mixed reality(MR), augmented reality(AR), and a few more. Most of these use a mixture of the real world and graphics in the visuals, which contrasts to VR's 100\% graphical visuals. The HTC Vive(figure \ref{fig:htcvive}) and the Oculus Rift(figure \ref{fig:oculus}) are the first generation of consumer VR-kits and are also currently the standard. This first generation of VR devices first hit the consumer market in 2016, but development kits and prototypes have been available a lot longer. The second generation of VR is already announced, some even available for pre-order, and the thing about these seems to be the lack of external sensors for tracking the headset and controllers. They are now integrated in the HMD. This will make transportation and setting up a lot easier. The user experience should also be better as this should remove the dizzying and or nauseating effect when the sensors loose track of the headset. They also boast better visuals in terms of less "bug net"-effect, higher resolutions, better colors, and some even eye-tracking. Both HTC and Oculus has announced tether-less versions for gaming as well. The previous generation's tether-less version were not compatible with games, as they did not support controllers suitable for this purpose, and probably not capable enough hardware. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/Htcvive.jpg}
+\caption{HTC Vive Pro and controllers}
+\label{fig:htcvive}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/oculusrift.png}
+\caption{Oculus Rift and Touch controllers}
+\label{fig:oculus}
+\end{figure}
+%The exact origins of virtual reality is uncertain due to the difficulty of defining an alternative existence. Then what is virtual reality? In terms of functionality it is a simulation where the world one sees is computer generated graphics which responds to input from the user in real-time. %[https://books.google.no/books?hl=no&lr=&id=0xWgPZbcz4AC&oi=fnd&pg=PR13&dq=virtual+reality+origin&ots=LDgAgW0Ncw&sig=gG7pQ1B9dXtZTtHGqBuIAyWE3uw&redir_esc=y#v=onepage&q=virtual%20reality%20origin&f=false ].
+%Virtual reality environments exist in several different forms. Some use projectors and rooms, while others use head mounted displays, or HMDs, and controllers. In recent times, HMDs have seen a surge in popularity and interest, most likely due to the increase in hardware capacity and decrease in size and price. Within this group or form of VR, there are kind of two categories. Due to the fact that technology has evolved to where it is now, even some smart phones are able to power light virtual reality experiences. This is the first category which uses regular smart phones or dedicated standalone headsets with equivalent specifications to power the virtual reality experience. These are experiences are limited in functionality and power due to the size. The second category are headsets and controllers which are powered by an external computer. This allows for far more computationally heavy applications. I will develop for the second category, since this allows the use of controllers and more complex interaction for better immersion. 
+
+\subsection{Software}
+
+Unity(figure \ref{fig:unity}) and Unreal Engine 4(figure \ref{fig:unreal}) were the only game engines considered for developing this application. They are the most common engines for independent developers to chose, especially for VR development. Both are also free to use for non-commercial use. The biggest difference in these engines is the lighting. In Unity the lighting is baked, while it is not in Unreal, which give Unreal a more realistic look by default. The trade-off for better more realistic lighting is that it is more work to develop in this engine? %todo check if this is the case
+\subsubsection{Unity}
+Unity has support for several languages, but the two most used are C\# and Javascript. So much so that Unity is dropping/has dropped support other languages. Unity is based around game objects and scripts, or components, attached to these game objects. These components, if they inherit from the default unity class: MonoBehaviour, have a start function which is run at the time the object is created, and an update function which is run every frame. MonoBehavior also has access to many more functions, but these are the basics. Unity is a mixture of visually programming and coding. If a variable in Unity is marked as public, it can be accessed visually within the editor. Unity also has an Asset store within the editor where all sorts of assets, like models, textures, sounds, and visual effects, can be purchased or downloaded for free. These assets are made by the community, and the quality is therefore varying, but there is a rating system to help chose wisely.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/unit3d.png}
+\caption{Unity logo}
+\label{fig:unity}
+\end{figure}
+
+\subsubsection{Unreal Engine}
+Unreal Engine uses C++ for development. However, it also provides "blueprints" which is an interface for scripting visually(drag n' drop). Strictly speaking, this means that both Unreal Engine and Unity can create games without having to code. Unreal is based around actors, which are almost equivalent of game objects in unity. Actors have components just like game objects in unity has. In addition they can have blueprints or scripts attached to them.  %todo lære litt unreal for å snakke litt om det
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/unreal.png}
+\caption{Unreal Engine logo}
+\label{fig:unreal}
+\end{figure}
+
+\subsubsection{SteamVR plugin}
+Since there exist many different forms of controllers and HMDs, Valve has created a plugin for Unity and Unreal Engine, SteamVR plugin. This plugin makes it possible to support a wide variety of devices using the same code. Using this will minimize the code needed to support a wide variety of devices. The difference between a VR game and a normal 3D game is that VR games need to somehow reflect the users movements and actions in real life within the game. I.g move the hands to where the user moves their controllers, look in the direction the user is pointing their head, and all these things. The focus of this plugin is therefore to load models of the controllers in use, handle the inputs of these, and estimate how the users hands look while using these controllers.
+
+
+
+%Teaching
+
+%Regular classroom teaching has its flaws and advantages. One of the biggest flaws is probably that it tries to teach a whole group at the same time. Because the teacher - student relation is one(few) to many, the entire group will necessarily be taught with the same pace. This is where classical method of teaching fails. Everyone learns at their own pace, and therefore some will get “left behind” while others will get bored. %A virtual single player game can fix this issue by allowing each user to progress at their own pace by enabling functionality such as skip or rewind. However, this comes at the cost of eliminating communication.  
+
+%Learning is enhanced when the learner is more immersed. This is quite obvious since learning requires focus, and immersion is, in a sense, a measurement of focus. A student who is more eager to answer or ask questions, or active, is a more immersed student, and is therefore more likely to learn more. Computers have gradually and increasingly been introduced as a supplement in the traditional classroom teaching method in recent years, as an attempt to improve teaching. Even though a computer requires interaction, which sort of forces at least a certain level of focus, it is easy to get distracted by what is happening around you. The belief here is that VR will be far superior to an ordinary computer screen in inducing immersion, since wearing a VR-headset blocks off your vision and partially your hearing.   
+
+
+
+\subsection{Multimedia Learning Theories}
+
+The cognitive theory of multimedia\cite{Mayer2014}, which is based upon the cognitive load theory\cite{CognitiveLoadTheory}, states that the visual input and the auditory input are processed on different channels, with a limited cognitive capacity for processing these inputs. This means if the visual channel is overloaded with input, the auditory channels processing will suffer, and vice versa. From this follows that irrelevant images, sounds, or words can harm the learning in the learner, and should therefor be avoided. In the book Multimedia learning\cite{Mayer2009}, Mayers present twelve principles for better design when using multimedia for presenting material. These principles are backed by both the cognitive theory of multimedia, and empirical studies.
+
+All these principles are important to consider, and the ones I deemed the most important are the coherence principle, the redundancy principle, the modality principle, the multimedia principle, the personalization principle, and the voice principle. 
+
+According to the coherence principle, people learn more or better if there are no irrelevant information or distractions. This can be anything from sound effects or animations in power point slide transitions, to digressions, to irrelevant imagery. I think this point in particular is important to take note of. VR gives the opportunity to do anything or be anywhere, which means it could be easy to fall for the temptation of creating a really interesting environment. This will probably pique the users interest, but might end up harming the application in terms of learning, if it distracts attentions away from the material presented.
+
+When it comes to deciding how to design the instructions, the redundancy principle suggests it has graphics and narration, but without text. The reasoning lies with the redundant text prompting extra visual processing, resulting in less learned. And while in  the area, the modality principle suggests that instructions consist of graphics and voice, rather than graphics and text. By having both text and graphics the visual channel might get overloaded, while with graphics and voice, the input is split among the auditory and visual channels.
+
+Since the goal of this project is not to replace the existing teaching method, but as an addition to it. The pre-training principle says that this is advantageous, as a learner who already knows the names and characteristics of the main concepts will learn more deeply from a multimedia instruction. If we take a look at the masters degree report of Kong and Kruke\cite{KongOgKruke}, they organized their game into single algorithms which enables the player to control the pacing of the information, to a certain degree. This is what the segmentation principle suggests, and is therefore to be considered in this project as well. 
+
+Lastly from these principles it is worth noting that people learn better when words are in conversational style rather than formal style, because the learner will be prompted to try harder when they feel that someone is talking to them specifically. Also, if these words are in the form of voice rather than text, the learner will be more engaged if the voice is human and kind compared to robotic and cold. This is according to the personalization and voice principles. 
+
+\subsection{Video Games and Fun}
+
+Even though this project is based around an educational game, it is still a game, and games are inherently made to be fun or entertaining. It should therefore be considered in this project as well. In 2005, Penelope Sweetster and Peta Wyeth, made an attempt at creating a model for evaluating and designing fun games. This model was based on Csikszentmihalyi's Flow theory\cite{Flow}, which is a theory or model on enjoyment in general, and the adapted version was named, creatively, GameFlow\cite{GameFlow}. 
+
+GameFlow consists of eight elements; Concentration, Challenge, Player Skills, Control, Clear Goals, Feedback, Immersion, and Social Interaction. For someone to enjoy a game, all of these elements does not necessarily need to be fulfilled, but at least a few of them. As an example, a game can be fun even though it does not include social interaction. Anyways, let's review what lies within these elements. 
+
+\begin{itemize}
+    \item Concentration - Games should require concentration, but also help the player in doing so
+    \item Challenge - Games should be sufficiently challenging
+    \item Player skills - Games should support player skill development and mastery
+    \item Control - Players should feel that they are in control of their actions in the game.
+    \item Clear goals - Games should provide players with clear goals at appropriate times
+    \item Feedback - Players should receive appropriate feedback at appropriate times
+    \item Immersion - Players should experience deep but effortless involvement in the game
+    \item Social Interaction - Games should support and create opportunities for social interaction
+\end{itemize}
+
+These eight points might prove helpful when making design choices for the prototype
+
+\begin{comment}
+- cognitive theory of multimedia
+- cognitive load theory
+
+- Adding stuff like visual effects, sounds and animations, will "use up" some of the cognitive capacity of the learner on , resulting in less capacity available for learning the material. 
+
+- multimedia learning == learning from words and pictures
+
+- previous studies have found that immersive VR, when not carefully designed, can distract the learner with animations and dynamic environments, from where the focus should be. E.g. spoken words or a demonstration. 
+
+- coherence principle and segmenting principle
+
+- Coherence: people learn better when unnecessary words, sounds, and  pictures are excluded. These divert the attention away from the important stuff, disrupt the process of organizing the information, and may lead to improper integration of new information with existing knowledge in the learner.(Mayer 2009). Research which backs up this theory showed that instructions in desktop VR in 2D was superior to desktop VR in 3D, due to the fact that the 3D environment requires more cognitive processing. Also research has found that cartoon-like graphics outperform photo realism, due to the same fact. 
+
+- Segmenting: people learn better when the lesson is presented in user-directed segments, and not as a continuous unit. This boils down to letting the learner decide the pacing of incoming new information. VR animations are usually continuous and therefore not abiding to this principle, to some extent. 
+- These principles shows that VR is very susceptible to not being as effective for teaching. 
+
+
+- Give the students something to do, not something to learn(learning by doing) - john dewey
+
+- Low-knowledge level learns best from images and speach(with instructions), while High-knowledge level learns best from images(without instructions) alone. 
+
+- Gameflow
+
+\end{comment}

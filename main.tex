@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage[parfill]{parskip}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=red
+}
+\title{
+{UniVRsity}\\
+{\large Norwegian University of Science and Technology}\\
+{\includegraphics{images/ntnu-logo.jpg}}
+}
+\author{Sindre Aarstrand}
+\date{Spring 2019}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\clearpage\mbox{}\clearpage
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\begin{abstract}
+    
+\end{abstract}
+\newpage
+\pagenumbering{arabic}
+\input{content/01-Introduction.tex}
+\newpage
+\input{content/02-Background.tex}
+\newpage
+\input{content/03-Method.tex}
+\newpage
+\input{content/04-Results.tex}
+\newpage
+\input{content/05-Discussion.tex}
+\newpage
+\input{content/06-Conclusion.tex}
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

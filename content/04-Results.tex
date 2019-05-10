@@ -1,0 +1,164 @@
+\section{Results}
+This section will present the results, in regards to development and testing. The part about development will touch upon architecture or structure, some specifics of major components, and bugs and stumbles which are worth mentioning. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next section: Discussion. 
+
+\subsection{Architecture}
+
+\subsection{Some Components}
+
+\subsubsection{LaserPointerPlayer}
+The LaserPointerPlayer prefab was a modified version of the Player prefab which is shipped out of the box with Steam VR. The Player prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component/script was add to control this model. 
+
+\subsubsection{\_FallbackGame}
+\_FallbackGame is a prefab, and it came to be after a bug found late in the development. Shortly explained, the LaserPointerPlayer prefab object would not be destroyed when chaning scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpos of this \_FallbackGame object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. And since there would only every be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. These are the EventManager and the ColorManager. 
+
+%In the prototype the sorting algorithms are based around a "SortManager", an "EventManager", the "SortingElement", the "ISortingAlgorithm", and the "GameAction". 
+\subsubsection{SortManger}
+The SortManager is a singleton class which is keeping track of all the elements that are to be sorted, which algorithm it should be sorted with, and the general state of the sorting. This class determines everything that is interaction based. If an action that is not allowed is attempted anyways, it will either not do anything or give the user a message telling the user that the attempted action is not allowed in this current state. It also controls what each kind of action does. 
+
+\subsubsection{EventManager}
+The EventManager is a class which contains all events happening within the game, and calls methods subscribed to the different events. It also handles the laser pointer and the interaction with the VR controllers, as some events are triggered in this way. The laser pointer searches for different kinds of interactable scripts in the game objects the raycast from the tip of the laser pointer hits, and calls the appropriate events.
+
+\subsubsection{SortingElement}
+The sorting element both a prefab and a script attached to that prefab. That prefab is an empty game object with the SortingElement script attached, and is the parent to a 3d cube object. The script which keeps track of its index within the array, does its movements based on different actions, scales the cube based on its size, and changes colors or outline according to state. 
+
+\subsubsection{ISortingAlgorithm} 
+The ISortingAlgorithm is an interface which any sorting algorithm should implement. By implementing this interface, new algorithms can quickly and easily be added(relative). The sorting algorithm which implements this should have a list of all actions which should be done on a specific array, in order, and functions for getting the current action and any action x steps into the algorithm.
+
+\subsubsection{SortingAlgorithm}
+The SortingAlgorithm class is abstract and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The most important abstract method is the GenerateActions method. It return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm.
+The important virtual methods are the Next and Prev functions. These can be overridden if something special needs to happen when the algorithm reaches a specific point when proceeding or regressing. 
+
+\subsubsection{GameAction}
+GameAction is an abstract class which all actions that a user can perform inherits from. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 
+
+
+\subsection{Bugs and stumbles}
+% the problem of VR player not beeing deleted between scenes, and the solution to that
+Improper use of the player prefab from the Steam VR Plugin was the source of one of the bugs found during development of this prototype. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of my scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to have create a pre start scene scene and a fallback prefab. Having this scene and fallback prefab also turned out to be a better architectural design. The idea behind was to create/load all the game objects which was common to all scenes in this pre start scene, and not destroy them on scene changes. The fallback prefab would be added to all other scenes and if the game had not been started from the pre start scene it would do the same as the pre start scene would; load the common objects and components.
+
+
+
+%the player
+
+\subsection{Features}
+The prototype was thought this project expanded to include the following features:
+
+\subsubsection{Common to all scenes}
+\begin{itemize}
+    \item Player - A camera and controller reflecting the physical orientation and position of the player hand his/her hands/controllers. Also has a laser pointer in the right hand for interacting with the world
+    \item Show outline on interactive objects when hovering over with the laser pointer
+    \item Interact with interactive objects by pressing the trigger button on the controller with the laser pointer while pointing at it
+    \item Buttons - Interactive object
+\end{itemize}
+
+\subsubsection{Over world}
+\begin{itemize}
+    \item Show available courses as different buttons
+    \item Course buttons - Loads the button's course
+    \begin{itemize}
+        \item Algorithms and Data Structures
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Algorithms and Data Structures}
+\textbf{Course hub(entry point):}
+\begin{itemize}
+    \item Show available topics as buttons
+    \item \textbf{Topic buttons} - Loads the button's topic
+    \begin{itemize}
+        \item Data structures
+        \item Sorting algorithms
+    \end{itemize}
+    \item Back navigation button - Go back to the over world
+\end{itemize}
+
+\textbf{Data structures:}
+\begin{itemize}
+    \item \textbf{Play mode} - Learn how the selected structure works
+    \begin{itemize}
+        \item Show available structures as buttons
+        \item \textbf{Structure buttons} - Go to play mode for selected structure
+        \begin{itemize}
+            \item Stack
+            \item Queue
+        \end{itemize}
+        \item \textbf{Stack and Queue} - Same play mode
+        \begin{itemize}
+            \item Show a representation of the data structure
+            \item Push/Enqueue button - Animate how the structure handles addition of data
+            \item Pop/Dequeue button - Animate how the structure handles removal/retrieval of data
+            \item Use case button - Go to use case mode for this structure
+            \item Back navigation button - Go back to course hub
+            \item Show explanation of each button
+            \item Show error message when doing an illegal action containing the error (Overflow/Underflow) and when it occurs
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Use case mode} - See how the selected structure can be used in a real life scenario
+    \begin{itemize}
+        \item \textbf{Stack and Queue} - Same use case: Image region growing
+        \begin{itemize}
+            \item Back navigation button - Go back to play mode for this structure
+            \item Show a description of what this use case is when entering the use case mode. Press the button on this panel to hide it and start the algorithm.
+            \item Show a black and white image with random pattern. Each pixel is an interactive object.
+            \item Pixel(interactive object) - Select (show a border color to indicate that it is selected)
+            \item Show a representation of the data structure selected before entering use case mode
+            \item Show a representation of the the item from the data structure is currently being read/used ("Next" as it points to the next pixel to check)
+            \item Show a representation of the internal state of the algorithm (Pattern so far, visited pixels, which pixel is next, etc...)
+            \item Show an explanation of the color coding in the representation of the algorithm
+            \item \textbf{Action buttons}
+            \begin{itemize}
+                \item Push/Enqueue - Animate addition of the selected Pixel to the data structure
+                \item Pop/Dequeue - Animate removal of next pixel from the data structure and into the "Next" position. 
+                \item Check - Animate the checking(whether it is or is not part of the pattern) of the pixel.
+            \end{itemize}
+            \item \textbf{Algorithm interaction buttons}
+            \begin{itemize}
+                \item Demo(toggle button) - Start/stop the demonstration of the algorithm. The demonstration animates how the algorithm works step by step.
+                \item Prev - Undo the last step in the algorithm(animate)
+                \item Next - Do the next step in the algorithm(animate)
+            \end{itemize}
+            \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
+            \item Data items popped or dequeued into "Next" will fire a laser at the pixel it represents. To indicate which pixel should be checked next
+        \end{itemize}{}
+    \end{itemize}
+\end{itemize}
+
+\textbf{Sorting Algorithms}
+\begin{itemize}
+    \item Back navigation button - Go back to course hub
+    \item Show available sorting algorithms as buttons
+    \item Show the array as a horizontal set of cuboids(array elements) on top of another cuboid(array stand or representation of the memory location). The elements has a height relative to their value: high value means a tall cuboid, and a low value means a short cuboid.  
+    \item Both the array and the the elements are interactive
+    \item Show a Cube representing the storage (where array elements can be temporarily stored)
+    \item Show a representation of the internal state of the algorithm
+    \item Show pseudo code for the selected algorithm
+    \item \textbf{Sorting algorithm buttons} - Generates a new random array and changes to this algorithm
+    \begin{itemize}
+        \item Bubble sort
+        \item Insertion sort
+        \item Quick sort
+        \item Merge sort
+    \end{itemize}
+    \item \textbf{Algorithm interaction buttons}
+    \begin{itemize}
+        \item Demo(toggle button) - Start/stop demonstrating the algorithm. The demonstration shows the algorithm step by step in the correct order and explains what it is doing.
+        \item Prev - Undo the last step in the algorithm(animate)
+        \item Next - Do the next step in the algorithm(animate)
+        \item New array - Generate a new random array
+        \item Restart - Resets the algorithm, and array back to start    
+    \end{itemize}
+    \item \textbf{Action buttons}
+    \begin{itemize}
+        \item Compare - Compare the value of two elements
+        \item Swap - Swap the values/position of one or two element(s)
+        \item Store - Clone one of the elements in the array to the storage
+        \item Copy to - Two step action: Copy selected element value into the next selection (limitations: can not copy to storage, use Store instead)
+        \item Pivot - Sets the selected element as a pivot
+        \item Split - Splits the selected array in two halves
+        \item Merge - Start the merge of two arrays
+    \end{itemize}
+    \item Show which buttons are disabled by changing their color, and the color of the outline when hover over
+    \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
+    
+\end{itemize}
+
