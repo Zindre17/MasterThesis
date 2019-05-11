@@ -1,32 +1,84 @@
 \section{Results}
-This section will present the results, in regards to development and testing. The part about development will touch upon architecture or structure, some specifics of major components, and bugs and stumbles which are worth mentioning. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next section: Discussion. 
+This section will present the results, in regards to development and testing. The part about development will touch upon architecture or structure, some specifics of major components, and some bugs and stumbles which are worth mentioning. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next section: Discussion. 
 
 \subsection{Architecture}
+%these figures should be in the method chapter somewhere
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/actual_result.png}
+\caption{The conclusive plan for how the scenes in the game would be arranged}
+\label{fig:plan_final}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/Plan.png}
+\caption{The conclusive plan for how the scenes in the game would be arranged}
+\label{fig:plan}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/potential_further_dev.png}
+\caption{The conclusive plan for how the scenes in the game would be arranged}
+\label{fig:plan_potential}
+\end{figure}
 
 \subsection{Some Components}
+This sub chapter will describe some of the most important pieces of this software and how they work. Not in too much detail though. For more details the code can be found on \href{https://github.com/Zindre17/UniVRsity}{Github}, but beware the code is practically only self commented. And not even that well self commented. I felt no need to comment the code, as I was constantly revisiting old code and doing improvements, and knew it pretty much inside out without the commenting. There were occasions where some comments could have saved me some time during some refactors though. 
+The different pieces will be classified as either one of these: 
+\begin{itemize}
+    \item A component - A C\# class inheriting from MonoBehaviour.
+    \item A prefab - A template for a game object which can be used to spawn predefined game objects at run-time or for speeding up the scene building process.
+    \item A class - A C\# class
+    \item An interface - A C\# interface
+\end{itemize}
 
-\subsubsection{LaserPointerPlayer}
+\subsubsection{LaserPointerPlayer} \label{subsubsec:LPP} 
 The LaserPointerPlayer prefab was a modified version of the Player prefab which is shipped out of the box with Steam VR. The Player prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component/script was add to control this model. 
 
 \subsubsection{\_FallbackGame}
-\_FallbackGame is a prefab, and it came to be after a bug found late in the development. Shortly explained, the LaserPointerPlayer prefab object would not be destroyed when chaning scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpos of this \_FallbackGame object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. And since there would only every be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. These are the EventManager and the ColorManager. 
+\_FallbackGame is a prefab, and it came to be after a bug found late in the development. Shortly explained, the \hyperref[subsubsec:LPP]{LaserPointerPrefab} prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpos of this \_FallbackGame object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. And since there would only every be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. These are the EventManager and the ColorManager. 
 
 %In the prototype the sorting algorithms are based around a "SortManager", an "EventManager", the "SortingElement", the "ISortingAlgorithm", and the "GameAction". 
-\subsubsection{SortManger}
-The SortManager is a singleton class which is keeping track of all the elements that are to be sorted, which algorithm it should be sorted with, and the general state of the sorting. This class determines everything that is interaction based. If an action that is not allowed is attempted anyways, it will either not do anything or give the user a message telling the user that the attempted action is not allowed in this current state. It also controls what each kind of action does. 
+\subsubsection{SortingManger}
+The SortingManager is a component which basically glues everything together and keeps track handles most of the logic for the flow of the game. Basically the big boss commanding all its minions. This class is however dependent on a lot of other smaller components. This class does not know \textit{how} to do things, only \textit{what} to do. Therefore it must have references to the components which actually know \textit{how} to perform these actions or handle specific events. It does not only know \textit{what} to do, it also knows \textit{when this is allowed} to do. In other words, it keeps track of a bunch of states and when it is notified of some interaction happening, it will decide whether or not this is legal and act accordingly. 
+Some references it keeps are :
+\begin{itemize}
+    \item \hyperref[subsubsec:SortingAlgorithm]{SortingAlgorithm} - An algorithm which the array should be sorted after
+    \item \hyperref[subsubsec:Arrays]{Arrays} - Keeps track of all the arrays, and the logic for interacting with them
+    \item Comparison - Handles compare actions
+    \item TitleManager - Updates the title of the room to the current algorithm
+    \item StateManager - Shows the updated state of the algorithms internals
+    \item ActionManager - Handles the state of the Action buttons (active or not)
+    \item AlgoControlManager - Handles the state of the buttons controlling the algorithm(Demo, prev, and next)
+    \item MessagesManager - Shows messages to the player about things that are happening
+\end{itemize}
+
+
+\subsubsection{Arrays and ElementAnimator} \label{subsubsec:Arrays}
+"Arrays" and "ElementAnimator" are components used in the sorting algorithms scene. They handle the logic of how the different actions affect the array(s) and their respectful animation definitions, and last but not least which array it should perform the action on. In the beginning they were the same component, but it got really big and I wanted to separate the Animations of the differrnt action with the logic behind it. And hence they became two. However it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
+
+The "Arrays" component is also an evolution from "ArrayManager". As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the "Array" component was created. It stole the logic from "ArrayManager" and added some more to handle several arrays. The Arraymanager was cut down to only keep track of its elements. 
+So the history went like this:
+\begin{itemize}
+    \item ArrayManager
+    \item ArrayManager, Arrays
+    \item ArrayManager, Arrays, ElementAnimator
+\end{itemize}
 
 \subsubsection{EventManager}
-The EventManager is a class which contains all events happening within the game, and calls methods subscribed to the different events. It also handles the laser pointer and the interaction with the VR controllers, as some events are triggered in this way. The laser pointer searches for different kinds of interactable scripts in the game objects the raycast from the tip of the laser pointer hits, and calls the appropriate events.
+The EventManager is a class which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. making the events static means that other components does not need a reference to the active EventManager in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a function which takes the same parameters as the delegate type of the event, and append that function to the event. Like this: 
+\begin{lstlisting}[language=C]
+// Subscribe to event
+EventManager.Name_of_event += Name_of_function;
 
-\subsubsection{SortingElement}
-The sorting element both a prefab and a script attached to that prefab. That prefab is an empty game object with the SortingElement script attached, and is the parent to a 3d cube object. The script which keeps track of its index within the array, does its movements based on different actions, scales the cube based on its size, and changes colors or outline according to state. 
+// Unsubscribe from event
+EventManager.Name_of_event -= Name_of_function;
+\end{lstlisting} 
 
-\subsubsection{ISortingAlgorithm} 
-The ISortingAlgorithm is an interface which any sorting algorithm should implement. By implementing this interface, new algorithms can quickly and easily be added(relative). The sorting algorithm which implements this should have a list of all actions which should be done on a specific array, in order, and functions for getting the current action and any action x steps into the algorithm.
+This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the LaserPointer, a component attached to the \hyperref[subsubsec:LPP]{LaserPointerPlayer} object, which gives the EventManager information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
 
-\subsubsection{SortingAlgorithm}
-The SortingAlgorithm class is abstract and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The most important abstract method is the GenerateActions method. It return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm.
-The important virtual methods are the Next and Prev functions. These can be overridden if something special needs to happen when the algorithm reaches a specific point when proceeding or regressing. 
+\subsubsection{SortingAlgorithm} \label{subsubsec:SortingAlgorithm}
+SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which already has a definition but can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm.
 
 \subsubsection{GameAction}
 GameAction is an abstract class which all actions that a user can perform inherits from. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 

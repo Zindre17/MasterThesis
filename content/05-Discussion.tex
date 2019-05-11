@@ -1,13 +1,49 @@
 \section{Discussion}
-This chapter will process the information and experience gathered and gained throughout the development and testing, and reflect around them. What was done well? What could have been done better? What have I learned? Does the results make sense? Is the data gathrerd sufficient for reaching a conclusion? Questions like these are what you might find in this chapter. Starting with the process and planning, then moving on to the development, and lastly the testing.
+This chapter will process the information and experience gathered and gained throughout the development and testing, and reflect around them. What was done well? What could have been done better? What have I learned? Does the results make sense? Is the data gathered sufficient for reaching a conclusion? Questions like these are what you might find in this chapter. Starting with the process and planning, then moving on to the development, the testing after that, and finally the results.
 
 \subsection{Planning and Process}
 It would seem as though the previous article was completely forgotten as I have learned next to nothing from it when it comes to planning and process. I redid the same mistakes which I did in the previous project. Too little upfront planning, and too much focus on the development. However, the biweekly meeting with my supervisor forced me to plan a bit ahead, and it gave me a sense of direction and also some sense of urgency. 
 
 \subsection {Development}
+\subsubsection{Animations}
+As an after thought, the way I handled animations was probably not the most efficient way. And by efficient, I mean efficient in terms of creating, not in terms of execution and performance. The animations were all done by code, which is kind of waste when there exists a tool for creating animations in the Unity editor. Using the tool in Unity allows for a visual generation of animations, which is a lot easier than using paper or imagine the different positions and rotations it should have throughout the animation. In the beginning of the project some experimentation was done with the animator tool, but, as a coder, it felt a bit weird. The tool seemed fairly easy to use, at least for objects already in the scene. The problems began when I needed the animation to spawn different objects and then do animations on them. I will admit that not a lot of effort was put in to figure out this, and instead decided to settle for writing the animations with code, as I already knew how to do this. It also felt better, as I knew exactly what was going on during these animations. 
+
+The way the animations were coded was by using Coroutines. Couroutines are a part of the UnityEngine library, and they work by defining a function with a return type of IEnumerator, and should contain the code for doing the animation, i.e move, rotate, and or scale objects. And to start the defined animation one needs to calling the StartCoroutine function and provide the animation function as a paramater to that function. 
+Like this:
+\begin{lstlisting}[language=C]
+IEnumerator SomeAnimation(){
+    float duration = .6f;
+    float elapsed = 0f;
+    float prevTime = Time.time;
+    //This while loop will run one iteration of the loop every frame for .6 seconds. This makes the animation's duration independent of the frame-rate
+    while(elapsed < duration){
+        // Do something every frame here
+        ...
+        float time = Time.time;
+        elapsed += time - prevTime;
+        prevTime = time;
+        yield return null;
+    }
+    //Do something at the end of the animation here
+    ...
+}
+
+...
+// Somewere inside a function which should trigger the SomeAnimation animation
+StartCoroutine(SomeAnimation());
+\end{lstlisting}
+
+The special part about these Coroutines is that is executes code until it reaches "yield return ..." then it will stop executing until next frame, and then continue from where it left of at the next frame. And if the animation wants to wait a set amount of time before resuming execution it can return a WaitForSeconds object. Like this:
+\begin{lstlisting}[language=C]
+// Inside a coroutine
+yield return new WaitForSeconds(time_to_wait_in_seconds_as_float);
+\end{lstlisting}
 
 \subsection{Testing}
 Testing was supposed to have started in late April or early May, but ended up happening mid May. The reason for this was a mixture of things. I was attending a confirmation of my cousin in Stavanger, and due to the SAS-strike I had to travel earlier than needed, and I got home later than planned. During this period I was not able to work too much on the project. This was late in April. Another reason was that I had a realization when I was showing VR to a friend and she wanted to see what I was making. I realized a bunch of tweaks I could make to improve the usability. And some of these tweaks took a lot longer to implement than I had thought. And since quite a few bugs were found in the last projects testing, I thoroughly tested the application in ways it was not meant to be used. This unveiled many bugs which I had not noticed earlier because I, the creator, know how the application is supposed to work and use it thereafter when testing new features. However, some of these bugs were surprisingly hard to squish, but As the testing went smoothly around this time, it seems it was not in vain. 
+
+\subsction{Results}
+
 \begin{comment}
 %diskutér resultatene 
 Discussion
