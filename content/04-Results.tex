@@ -53,16 +53,16 @@ Some references it keeps are :
     \item MessagesManager - Shows messages to the player about things that are happening
 \end{itemize}
 
-
+%this needs a rewrite 
 \subsubsection{Arrays and ElementAnimator} \label{subsubsec:Arrays}
-"Arrays" and "ElementAnimator" are components used in the sorting algorithms scene. They handle the logic of how the different actions affect the array(s) and their respectful animation definitions, and last but not least which array it should perform the action on. In the beginning they were the same component, but it got really big and I wanted to separate the Animations of the differrnt action with the logic behind it. And hence they became two. However it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
+"Arrays" and "ElementAnimator" are components used in the sorting algorithms scene. They handle the logic of how the different actions affect the array(s) and their respectful animation definitions, and last but not least which array it should perform the action on. In the beginning they were the same component, but it got really big and I wanted to separate the Animations of the different actions with the logic behind them. And hence they became two. However, it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
 
 The "Arrays" component is also an evolution from "ArrayManager". As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the "Array" component was created. It stole the logic from "ArrayManager" and added some more to handle several arrays. The Arraymanager was cut down to only keep track of its elements. 
 So the history went like this:
 \begin{itemize}
     \item ArrayManager
-    \item ArrayManager, Arrays
-    \item ArrayManager, Arrays, ElementAnimator
+    \item ArrayManager and Arrays
+    \item ArrayManager, Arrays and ElementAnimator
 \end{itemize}
 
 \subsubsection{EventManager}
@@ -78,10 +78,10 @@ EventManager.Name_of_event -= Name_of_function;
 This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the LaserPointer, a component attached to the \hyperref[subsubsec:LPP]{LaserPointerPlayer} object, which gives the EventManager information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
 
 \subsubsection{SortingAlgorithm} \label{subsubsec:SortingAlgorithm}
-SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which already has a definition but can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm.
+SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which already has a definition but can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm. The CheckForFocusChange method should send trigger an event in the EventManager when the algorithm reaches a state where there is a change in which elements are in focus.
 
 \subsubsection{GameAction}
-GameAction is an abstract class which all actions that a user can perform inherits from. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 
+GameAction is an abstract class which all actions that a user can perform inherits from. This class contains very little functionality as its reason for existing was to be able to group several different actions under the same type, such that collections could be made. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 
 
 
 \subsection{Bugs and stumbles}
@@ -91,9 +91,8 @@ Improper use of the player prefab from the Steam VR Plugin was the source of one
 
 
 %the player
-
 \subsection{Features}
-The prototype was thought this project expanded to include the following features:
+The following features were present in the final version of the prototype:
 
 \subsubsection{Common to all scenes}
 \begin{itemize}
