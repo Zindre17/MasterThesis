@@ -51,7 +51,7 @@ Unreal Engine uses C++ for development. However, it also provides "blueprints" w
 \end{figure}
 
 \subsubsection{SteamVR plugin}
-Since there exist many different forms of controllers and HMDs, Valve has created a plugin for Unity and Unreal Engine, SteamVR plugin\cite{SteamVR_Plugin}. This plugin makes it possible to support a wide variety of devices using the same code. Using this will minimize the code needed to support a wide variety of devices. The difference between a VR game and a normal 3D game is that VR games need to somehow reflect the users movements and actions in real life within the game. I.g move the hands to where the user moves their controllers, look in the direction the user is pointing their head, and all these things. The focus of this plugin is therefore to make the camera follow the users head, load models of the controllers in use, make these controller models follow the users hands, handle the inputs of these, and estimate how the users hands look while using these controllers.
+Since there exist many different forms of controllers and HMDs, Valve has created a plugin for Unity and Unreal Engine, SteamVR plugin\cite{SteamVRPlugin}. This plugin makes it possible to support a wide variety of devices using the same code. Using this will minimize the code needed to support a wide variety of devices. The difference between a VR game and a normal 3D game is that VR games need to somehow reflect the users movements and actions in real life within the game. I.g move the hands to where the user moves their controllers, look in the direction the user is pointing their head, and all these things. The focus of this plugin is therefore to make the camera follow the users head, load models of the controllers in use, make these controller models follow the users hands, handle the inputs of these, and estimate how the users hands look while using these controllers.
 
 
 
@@ -115,14 +115,15 @@ GameFlow consists of eight elements; Concentration, Challenge, Player Skills, Co
 
 %These eight points might prove helpful when making design choices for the prototype
 
-Using VR will surround the entire field of vision for the player and should in theory increase the users attention towards the VR application. However, it is still not guaranteed that the player will aim its attention within the virtual world to the place where the developer intended for the player to have their focus. It will only guarantee that the attentions is somewhere within the virtual world. Immersion is closely linked to concentration and is another point where using VR as a platform might be beneficial. The selling point for VR is the immersion that it gives and strives to get even better at. This suggests that there is less need to focus on designing the game in such a way that it promotes immersion, since the VR platform does a lot work for this point by just being this platform. The other points will probably not gain too much just from the prototype being in VR. Nevertheless, all eight points should be taken kept in mind when designing the prototype.
+Using VR will surround the entire field of vision for the player and should in theory increase the users attention towards the VR application. However, it is still not guaranteed that the player will aim its attention within the virtual world to the place where the developer intended for the player to have their focus. It will only guarantee that the attentions is somewhere within the virtual world. Immersion is closely linked to concentration and is another point where using VR as a platform might be beneficial. The selling point for VR is the immersion that it gives and strives to get even better at. This suggests that there is less need to focus on designing the game in such a way that it promotes immersion, since the VR platform does a lot of work for this point by just being this platform. The other points will probably not gain too much just from the prototype being in VR. Nevertheless, all eight points should be taken kept in mind when designing the prototype.
 
 
 
 
 \subsection{Four Keys to Fun}
-\todo{add lazzaro}
-\cite{lazzaro}
+
+Lazzaro found that there are four ways to make player have fun and enjoy games\cite{lazzaro}. This is merely an identification of where the fun comes from, and does not directly provide a tool for better game design. However, knowing what can make a game fun might prove helpful anyways. It can also be used to analyze existing game design, even though it will not provide suggestions for improvements.
+
 The four keys are as follows:
 \begin{itemize}
     \item Hard Fun (Fiero)
@@ -131,7 +132,78 @@ The four keys are as follows:
     \item People Fun
 \end{itemize}
 
+Hard fun is, as its name implies, when the fun comes from the difficulty within the game. If something is difficult and the player fails, they will feel frustration, and as they keep failing, their frustration will increase. However, if the player gets a tiny bit better every time, the player will eventually complete the challenge, and when that moment comes, all of the frustration goes away in an intense emotion referred to as "fiero", and after the excitement of finally having completed the challenge, the player feels relieved... until the next challenge is at hand, and the process repeats. It should be noted that there exists different kinds of frustration and not all of them will lead to the player having fun. 
+
+Easy fun comes from curiosity. If the game inspires curiosity the player will enjoy the game. Having freedom in the interaction can help in this regard, as the player might then be tempted to explore the boundaries of what is possible to do. The chain of emotion in this key of fun is: Curiosity - Surprise - Wonder or Awe - Relief - Back to curiosity again. Put into a scenario: A player is curious as to what happens when he does a certain kind of action, the result of the action performed was not expected in the player and is surprised. After the initial surprise the player is in wonder by this result and feels relieved as the itch from the curiosity is now gone. Then it repeats when the player pops up with a new question he or she wants answered. However, for this to be effective, the results of the exploration and fooling around need to be balanced between novelty and familiarity; too novel - and the player falls into disbelief, too predictable - and the player is bored or lose interest.
+
+Serious fun comes when the player is playing to change how he or she thinks, behave, or to accomplish real work. This means that serious fun is very subjective. If a game is low on serious fun, it will feel like a waste of time. And the emotions linked to serious fun usually comes from the graphics, sound, and or atmosphere within the game. It can also be a more cognitive fun as it might give players something to think about outside of the game.
+
+People fun has to do with everything which connects the game with other people. This can be by talking about the game with your friends face to face, by having a chat in-game, or what have you. Interacting with other people is an important source for feeling different emotions. It can also create identities and shape relationships. 
+
+The more a game applies these four key, the more entertaining it will be. And a fun game is a more effective one. Therefor these keys should be kept in mind both when designing the prototype, and during the testing. 
+
+\subsection{System Usability Scale}
+The System Usability Scale\cite{SUS}, or SUS for short, is a way for measuring usability in a system, be it hardware or software. It consists of a questionnaire with 10 fixed statements where the responses to these should be on a scale from 0 to 4, where 0 equals "Strongly disagree" and 4 being "Strongly agree". The creator of this measuring tool is John Brooke, in the year 1986. SUS has become the industry standard due to its simplicity for the participants, and the fact that it does not need a large sample size to get reliable results. The following 10 items are the fixed statements of a SUS questionnaire:
+\begin{itemize}
+    \item I think that I would like to use this system frequently.
+    \item I found the system unnecessarily complex.
+    \item I thought the system was easy to use.
+    \item I think that I would need the support of a technical person to be able to use this system.
+    \item I found the various functions in this system were well integrated.
+    \item I thought there was too much inconsistency in this system.
+    \item I would imagine that most people would learn to use this system very quickly.
+    \item I found the system very cumbersome to use.
+    \item I felt very confident using the system.
+    \item I needed to learn a lot of things before I could get going with this system.
+\end{itemize}
+
+Scoring the response of the SUS questionnaire follows these steps\cite{MeasuringSUS}:
+\begin{itemize}
+    \item Odd items: add the score to the cumulative score
+    \item Even items: flip the score then add to the cumulative score(subtract given score from 4. In other words if a participant gives 1 as a response on a question then the flipped score will be 4 - 1 = 3)
+    \item finally after summing all scores, multiply by 2.5 to increase the score range from 0-40 to 0-100
+\end{itemize}
+
+As the scores of a SUS is between 0 and 100 it can be tempting to look as these as a percentage. This is, however, the wrong way to interpret the scores. The average SUS score is 68 and is therefor in the percentile rank of 50\%. The percentile rank increases quite rapidly from there and is in the percentile rank of 70\% already at a score of 74, and percentile rank of 90\%(top 10\%) at a score of 80.4. Below the 68 score the percentile rank drops to 30\% at about 60, and to 10\% at about 47. In other words the percentile rank drops really fast close to the average score, and a bit less so further away from it. A score of 67 and 69 is therefore quite far apart from each other in terms of the percentile rank.  
+
+The System Usability Scale was used in the previous project as the next section will give some more information about. It should probably also be used in this project, as it is very easy to use for the participants, and it gives a good indication as to whether or not the application is user friendly.
+
+\subsection{Previous Work}
+
+As already stated, this project is a continuation of another project. The prototype developed in that project consisted of a single scene, which was for teaching sorting algorithms. This scene had implemented two sorting algorithms: bubble sort and insertion sort. \href{https://youtu.be/7m7B7zJ4KIQ}{Click here} to see a video of the functionality and contents of the first prototype. The interaction was purely through pointing with a laser in the right hand and pressing the trigger when pointing at objects which were interactive. This prototype was also user tested, though only by 5 people. The user test consisted mainly of a usability test, utilizing the System Usability Scale. What the results of this testing showed was that usability was closely linked with the whether the player had taken the course or not. 
+
+\subsubsection{Design}
+As can be seen in video of the previous prototype, the design of the scene where the sorting happens is formed kind of like a semi circle. To the front, the representation of the array is shown, with the array elements represented as yellow cuboids with height visually representing their value, and the array itself represented as a cuboid laying on the ground with its elements hovering above it. To the left of the array, still to the front, lies a cube representing the storage area, where algorithms needing to save values outside of the array can place them. On the floor in front of where the player stands, there is a panel. This panel shows the state of the algorithm, the pseudo code for the algorithm, and shows output from the most recent comparison of elements. To the left are two walls with buttons aligned vertically. One for selecting algorithm, and one with buttons for starting a demonstration of the algorithm, starting the algorithm over again, and getting a new randomly generated array. The buttons are thin cuboids with big labels on them representing their respective actions. The other side, to the right, contains a wall with action buttons. The available actions are compare, swap, store, and copy to.
+
+Reading a value as a number in text is easy, Seeing the value as the length of an object is easier. That is the reasoning behind the design of the array elements. The two projects from the year before mainly used cubes of equal size, though an option to show the difference in size as one shrinking and one growing was available in one of them. The reason for choosing equal sized cubes in their prototypes are most likely grounded in their choice of interaction. They represented arrays as cubes, and the player had to do the physical motion of picking up the cubes to sort them. Picking up big objects is more awkward than using hand-sized objects, and is probably their reason for their design choice. However, my design uses a laser pointer for interaction, and there is no more an issue of awkwardly picking up large objects. Using a laser pointer opens up a lot of new options compared to what the other prototypes had, and loses some opportunities in comparison also. One of the reasons behind choosing a laser pointer as interaction mechanism, was that it removes a lot of the distraction involved with having the ability to play around with stuff with virtual hands. Just having hands seem to distract people who has not tried VR before as they are amazed by the feeling of seeing their own hands move in the virtual world. And as the theory presented the previous chapter suggests, distractions are bad when it comes to learning.
+
+\subsubsection{Development}
+The chosen game engine in the previous project was Unity, because it felt easier and quicker to use after some tinkering about in both Unity and Unreal. Research into which engine to choose for the project did not really lead anywhere, and suggested it should just be up to personal preference. Seeing as I was not particularly determined to make a realistic looking game, there was no need for the non-baked lighting which Unreal provides.
+
+After the decision of which game engine to use, it had to be properly learned. This was done through a combination of watching youtube videos, reading the documentation, doing tutorials, and experimenting. The main channels used were \href{https://www.youtube.com/channel/UCLO98KHpNx6JwsdnH04l9yQ}{FusedVR} for VR specifics and \href{https://www.youtube.com/user/Brackeys}{Brackeys} for general Unity things. Both of these channels used C\# as their programming language of choice in their videos, and it ended up being the language I chose as well. Youtube videos are great because one can learn how professionals or people with a lot of experience with the engine uses it, and their workflows. They can also be helpful in terms of how to solve common problems or help in avoiding common mistakes beginners do. Before the development of the actual prototype went down, a couple of mini-VR-games were made. This was just to get used to the engine, and also how to interface with the VR gear. This experimentation proved to be very effective as it gives hands on experience and a sense of how to work with this technology. 
+
+To be able to use any VR-kit without writing hardware specific code, the SteamVR Plugin for Unity was used. To be able to work anywhere, the version control system Git was used, and it is hosted on Github, as a public repository. Hosting the project on GitHub in a public repository will enable other developers to further build upon this project, should it turn out to be a good one. There was no need to use Unity's collaboration tool/version control system, Unity Collaborate\cite{UnityCollab}, as there was only one developer during the extent of this project. 
+
+\subsubsection{Architecture}
+The architecture in the previous project, was focused around the game having to be modular, and easily expanded. To do this, sorting algorithms had to be generalized such that the common functionality would not need to be re-implemented, instead only specifics for the new algorithm. The same went for user actions. They were also generalized such that it would be easy to add new actions. This architecture makes it a lot easier to add new algorithms and actions, but it requires more thought into the initial development. The algorithms was generalized fairly well during the development, however, actions, not so much. Due to the way the algorithms were made, they were completely isolated from the arrays them selves, which meant that actions could not be generally designed. The result was actions just having a type, an enum describing what action it represents, and some integer values representing the position within the array the action should affect. This in turn meant that what the different types actions actually do, is up to whichever component is handling the action. The positive with this is that the action types can be reused in other scenes, as they have no actual actions linked to them. However, in this case it probably would have been smarter to not have the sorting algorithms be disconnected from the array representation, and therefor the actions separated from them. 
+
+\subsubsection{Testing}
+The testing was quickly brushed over in the introduction of this prototype, saying it was mainly a SUS questionnaire and that 5 people participated. The results of the SUS was a score of 67.5 which is below average. However looking at the background of the testers the scores could indicate that having taken the course in advance was correlated to a higher ease of use. The average score of people having had the course was to 75.83, which is a good score. Just watching the tests also gave a lot of insight. People thought that the prototype was some some sort of playground, where one could also see how some algorithms worked. This was not the case, and it confused the testers. The laser pointer interaction seemed to be intuitive, but how to perform the different actions on the array was not very intuitive. 
+
+\subsubsection{Unfinished ideas}
+Some of the features or ideas for the project was not implemented due to time constraints and or other difficulties. The ones worth mentioning are these:
+\begin{itemize}
+    \item Voice - Add voice which gives instructions instead of/in addition to the text.
+    \item Overworld - Add an overworld where the player can travel to different courses.
+    \item Tree traversing algorithms - Add a scene where the player could learn different tree traversing algorithms.
+    \item Highlight line of code being executed
+    \item Tutorial - Add a form of tutorial explicitly teaching the player what they can do.
+    \item Remove the gun model - Should be a normal laser pointer instead
+\end{itemize}
+These ideas should be considered when planning the further development of this prototype in this project. 
+
 \begin{comment}
+
 - cognitive theory of multimedia
 - cognitive load theory
 
