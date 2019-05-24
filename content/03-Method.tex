@@ -1,18 +1,54 @@
 %denne delen skal forklare hvordan spillet har blitt implementert og hvordan teorien har blitt utnyttet
 \section{Method}
-This section will present how the prototype was planned and reasoning behind decisions made, as well as which features and functionality should be implemented in Unity.
+\todo{Denne delen er klar for gjennomlesing . Den er litt kort, men vet ikke helt hva mer som skal være med}
+
+This section will present how the prototype was planned, the different choices made in regards to how the development should be done, and also how the testing should be performed. A lot of the theory presented in the previous chapter/section\todo{which do i use?} does not really fit in this section as most of it is only applicable to very specific things, and this section is more of a general description. Fear not though, the theory will be applied in the two next chapters/sections, results(\autoref{sec:Result}) and discussion(\autoref{sec:Discussion}). These will go more into the details, and can then see how the theory supports or is against these.  
 
 \subsection{General Plan}
-The plan going into this project was to continue the development of the prototype developed in the previous project. Making improvements and adding new features to it, and then test it again to see if it actually improved. As far as design goes there will not be any major changes, unless something which forces this occurs. There will however be additions to it, and these additions will try to achieve a similar style. This is to be consistent with how things work, not causing unnecessary confusion in the players. The planning of the expansion of content and making improvements will happen in iterations. Come up with a next step, implement this idea, then from there figure out where to go next. In other words it should happen in iterations, where the planning of each iteration would mostly happen through meeting with the supervisor. 
+The plan going into this project was to continue the development of the prototype developed in the previous project. Making improvements and adding new features to it, and then test it again to see if it actually improved. As far as design goes there will not be any major changes, unless something which forces this occurs. There will however be additions to it, and these additions will try to achieve a similar style. This is to be consistent with how things work, not causing unnecessary confusion in the players. The planning of the expansion of content and making improvements will happen in iterations. Come up with a next step(a general idea, no specifics), figure out how to implement this idea, implement it, then from there figure out where to go next. In other words it should happen in iterations, where the next step for each iteration would mostly come from the meetings with the supervisor.  
+
+Coming from the previous project the structure of the prototype was just a single scene. However, the plan for a finished product looked something like that which can be seen in  \autoref{fig:plan}. The question marks represent any number of courses or topics, and the structure is hierarchical. The overworld is at the top of the hierarchy and form there the player can navigate to any course hub. The course hubs are the next level of the hierarchy where the player can either navigate back to the overworld, or to any topic within the course. The topics are the lowest level in the hierarchy, and the player can only navigate back to its course hub from there. This hierarchy will be the guide when adding new content in this project.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/Plan.png}
+\caption{The idea of how the scenes in the final product should be arranged. The question marks can be any number of boxes.}
+\label{fig:plan}
+\end{figure}
+
+
 
 \subsubsection{Iteration 1}
-The goal for the first iteration was found through having a discussion with my supervisor, and the result of this was to add another topic from Algorithms and data structures. The topic chosen was data structures. Another idea which were considered was to start adding another course like Machine learning. However, this was discarded for the time being. 
+The goal for the first iteration was to add another topic from the course Algorithms and data structures. The topic chosen was data structures, despite the previous project having some ideas around tree traversing algorithms. The reason for this, was to better represent the content of the course. It is not only about algorithms. Another idea which were considered was to start adding another course like Machine learning. This would imply a scene structure like the one seen in \autoref{fig:plan_potential}. However, this was discarded for the time being, and the structure would instead look like the one presented in \autoref{fig:plan_final}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/potential_further_dev.png}
+\caption{How the scenes in the game would be arranged, if the machine learning course was added instead of the data structure topic.}
+\label{fig:plan_potential}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/actual_result.png}
+\caption{The plan for how the scenes in the game would be arranged, after the first iteration}
+\label{fig:plan_final}
+\end{figure}
 
 \subsubsection{Iteration 2}
-The next iteration after the initial data structure scene was added, was to go back to the sorting algorithm scene and add a more commonly used algorithm to the mix. The algorithm chosen was quick sort. 
+The next iteration after the initial data structure scene was added, was to go back to the sorting algorithm scene and add a better and more commonly used algorithm to the mix. The algorithm chosen was quick sort, as it fits these criteria.
 
 \subsubsection{Iteration 3}
-In the third iteration, the idea was to add some form of use case to each of the data structures. The idea behind that idea was to show the player how this data structure could be used in a real life scenario. As the data structures added in the previous iteration was a stack and a queue, and the supervisor teaching visual computations the decision for use case landed on an image region growing algorithm. This algorithm need to keep track of which pixels to explore, which works with both a stack and a queue, but will behave slightly different in how the pattern grows. 
+In the third iteration, the idea was to add some form of use case to each of the data structures. The idea behind that idea was to show the player how this data structure could be used in a real life scenario. As the data structures added in the previous iteration was a stack and a queue, and the supervisor teaching visual computations the decision for use case landed on an image region growing algorithm. This algorithm need to keep track of which pixels to explore, which works with both a stack and a queue, but will behave different in how the pattern grows.
+
+\subsubsection{Iteration 4}
+Seeing as the overworld, course hubs, and the navigation between them was still not implemented, it was time to do this. This was planned already back in the previous project but not achieved in the duration of it, and it was long overdue to get started on this. It would still be arranged like the figure from iteration 1,  \autoref{fig:plan_final}. My supervisor had an idea of making the overworld look similar to a school ground or university ground. However, due to time constraints, the looks of it was not the priority. The priority was getting the functionality down. Considering that I have no experience in creating 3D models, textures, or other forms of visuals, the results would probably be sub-par and it would cost me a lot of time. 
+
+\subsubsection{Iteration 5}
+After the overworld and navigation was added, I wanted to add the merge sort algorithm. Though this required a lot of rework to the sorting scene in the state it was at, at the time. Merge sort is different to the other three sorting algorithms in that it creates new arrays in the process.  
+
+\subsubsection{Iteration 6} 
+This time I had realized that I had forgotten to improve things which were commented on or discovered during the testing in the previous project. I had been too focused on adding new features and improving stability and architecture, and forgotten probably the most important part; improving the usability. This iteration would therefore consist of making a lot of improvements in terms of usability and thoroughly testing the application to find and squash bugs before the testing started. 
 
 %Moving on to this project, I want to keep the design, and rather just modify things if a better solution presents itself. 
 
@@ -25,6 +61,8 @@ In the third iteration, the idea was to add some form of use case to each of the
 %this needs to be here somewhere, not in background
 \subsection{Development}
 The choice of game engine and programming language fell on the decision from the previous project, namely Unity and C\#, as this project's intentions are to directly improve upon this same prototype. Recreating the previous prototype in another game engine would be a lot of unnecessary work, since the plan is to keep everything and just build on top of the existing prototype, and the other game engine would need to be learned, and probably the programming language the game engine uses as well. This does not fit in with the time schedule of this project. In addition, the gained experience with the game engine from the previous project would shorten further development times. In other words, I was already familiar with using Unity and C\# at this point and did not really need to spend more time on learning the engine. This project would continue to work on the same public repository on Github as in the previous project. 
+
+This project does not intend to alter the architecture of the existing prototype. It should still focus on being modular, as this makes it easier for other developers to extend it and improve upon it. Having the prototype keep evolving and eventually encompassing a plethora of courses is kind of the idea or hope here. However, considering the time constraint making things work is more important than having a good architecture. At least in the short term scenario. 
 %The chosen game engine in the previous project, and therefore this project also, was Unity, because it has a bigger/more active community which will help when problems or confusion arise. Unity is also considered to be better suited for indie developers. Seeing as I am the only one developing this application, I am more comparable to an indie developer rather than a company.
 
 
@@ -33,10 +71,10 @@ The choice of game engine and programming language fell on the decision from the
 
 
 
-\subsection{Summary of Plan}
-Something which was planned in the previous project, but not achieved was the environment where the user could navigate to different courses and from there to different parts of these courses. My supervisor had suggested a virtual school ground or university ground and have different courses behind different doors or at different locations in this virtual environment. Despite the prototype only having content within one course, this project would attempt to implement this in some form. However, at a low priority. Expanding and improving functionality should be the main focus of this project. 
+%\subsection{Summary of Plan}
+%Something which was planned in the previous project, but not achieved was the environment where the user could navigate to different courses and from there to different parts of these courses. My supervisor had suggested a virtual school ground or university ground and have different courses behind different doors or at different locations in this virtual environment. Despite the prototype only having content within one course, this project would attempt to implement this in some form. However, at a low priority. Expanding and improving functionality should be the main focus of this project. 
 
-The ambition of this project is to add at least one sorting algorithm which is actually used in the real world, and add at least some content within another branch of the Algorithms and Data structures course. This will most likely be either tree-traversing algorithms, or demonstrating some data structures. Improving the existing sorting algorithm scene should also always be attempted. In terms of testing it should be striven after having more test subjects than that which was achieved in the previous project, and also with a higher quality in the testing. 
+%The ambition of this project is to add at least one sorting algorithm which is actually used in the real world, and add at least some content within another branch of the Algorithms and Data structures course. This will most likely be either tree-traversing algorithms, or demonstrating some data structures. Improving the existing sorting algorithm scene should also always be attempted. In terms of testing it should be striven after having more test subjects than that which was achieved in the previous project, and also with a higher quality in the testing. 
 
 
 %A plan was needed before the development could begin. My supervisor had envisioned a sort of virtual university where one could navigate some sort of school or university grounds, and teaching different courses in different areas of this environment. My supervisor also had two groups the previous year which had similar projects where they were using VR to teach sorting algorithms. These were based around the user having to physically sort the cubes but in the way the algorithm dictated it. This idea and these projects would be the foundation for the prototype. 
@@ -50,10 +88,10 @@ The ambition of this project is to add at least one sorting algorithm which is a
  
 % Hosting the project on GitHub in a public repository will enable other developers to further build upon this project, should it turn out to be a good one. And maybe one day it can live up to it's name; UniVRsity! 
  
- \subsection{Architecture}
- The architecture in the previous project, was focused around the game having to be modular, and easily expanded. To do this, sorting algorithms had to be generalized such that the common functionality would not need to be re-implemented, instead only specifics for the new algorithm. The same went for user actions. They were also generalized such that it would be easy to add new actions. This architecture makes it a lot easier to add new algorithms and actions, but it requires more thought into the initial development. The algorithms was generalized fairly well in during the development, however, actions, not so much. Due to the way the algorithms were made, they were completely isolated from the arrays them selves, which meant that actions could not be generally designed. The result was actions just having a type, an enum describing what action it represents, and some integer values representing the position within the array the action should affect. This in turn meant that what the different types action actually does is up to whichever component is handling the action. The positive with this is that the action types can be reused in other scenes, as they have no actual actions linked to them. However, in case it probably would have been smarter to not have the sorting algorithms be disconnected from the array representation, and therefor the actions separated from them. 
  
- This project does not intend to change the architecture. It should still focus on being modular, as this makes it easier for other developers to extend the it and improve upon it. Having the prototype keep evolving and eventually encompassing a plethora of courses is kind of the idea or hope here.
+ %The architecture in the previous project, was focused around the game having to be modular, and easily expanded. To do this, sorting algorithms had to be generalized such that the common functionality would not need to be re-implemented, instead only specifics for the new algorithm. The same went for user actions. They were also generalized such that it would be easy to add new actions. This architecture makes it a lot easier to add new algorithms and actions, but it requires more thought into the initial development. The algorithms was generalized fairly well in during the development, however, actions, not so much. Due to the way the algorithms were made, they were completely isolated from the arrays them selves, which meant that actions could not be generally designed. The result was actions just having a type, an enum describing what action it represents, and some integer values representing the position within the array the action should affect. This in turn meant that what the different types action actually does is up to whichever component is handling the action. The positive with this is that the action types can be reused in other scenes, as they have no actual actions linked to them. However, in case it probably would have been smarter to not have the sorting algorithms be disconnected from the array representation, and therefor the actions separated from them. 
+ 
+ 
  %As far as architecture for the prototype goes, it was more or less just a rough idea in the beginning and evolved as the development progressed. Another aspect I thought was important was for the game to easily add new algorithms, and there will therefore be more work to define what is allowed or possible to do, and how to define an algorithm. In other words, there will be more work to get everything working, but there will be less work to add new algorithms once the core is working properly.
 
 \subsection{Testing}

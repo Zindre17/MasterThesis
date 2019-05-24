@@ -1,30 +1,86 @@
-\section{Results}
+\section{Results} 
+\label{sec:Result}
+\todo{Denne delen trenger en del omskriving/omstrukturering og legge til test resultatene} 
+
 This section will present the results, in regards to development and testing. The part about development will touch upon architecture or structure, some specifics of major components, and some bugs and stumbles which are worth mentioning. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next section: Discussion. 
 
-\subsection{Architecture}
-%these figures should be in the method chapter somewhere
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{images/actual_result.png}
-\caption{The conclusive plan for how the scenes in the game would be arranged}
-\label{fig:plan_final}
-\end{figure}
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{images/Plan.png}
-\caption{The conclusive plan for how the scenes in the game would be arranged}
-\label{fig:plan}
-\end{figure}
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{images/potential_further_dev.png}
-\caption{The conclusive plan for how the scenes in the game would be arranged}
-\label{fig:plan_potential}
-\end{figure}
+\subsection{The Prototype}
+The development was halted in mid May, 2019, to give time for testing and writing the report. The final version of the prototype can be seen in \href{??}{this} video. It shows how the prototype works, how it looks, and a general look into all its content. Some of the most important pieces of this software and how they work will be explained right after this. Not in too much detail though. For more details the code can be found on \href{https://github.com/Zindre17/UniVRsity}{Github}, but beware the code is practically only self commented. And not even that well self commented. I felt no need to comment the code, as I was constantly revisiting old code and doing improvements, and knew it pretty much inside out without the commenting. There were occasions where some comments could have saved me some time during some refactors though. Then finally an exhaustive list of the features in the prototype will be presented. 
 
-\subsection{Some Components}
-This sub chapter will describe some of the most important pieces of this software and how they work. Not in too much detail though. For more details the code can be found on \href{https://github.com/Zindre17/UniVRsity}{Github}, but beware the code is practically only self commented. And not even that well self commented. I felt no need to comment the code, as I was constantly revisiting old code and doing improvements, and knew it pretty much inside out without the commenting. There were occasions where some comments could have saved me some time during some refactors though. 
-The different pieces will be classified as either one of these: 
+\subsubsection{Overworld}
+The overworld is just a plain with a wall on top of it, and some hovering text, showing the name of the prototype; ``UniVRsity''. The wall contains buttons for all the courses in the prototype, which is at this point in time only one; ``Algorithms and data structures''. 
+%This scene, as well as all other scenes contain a ``\_FallbackGame'' prefab. This prefab is very shorty described the player and everything all scenes need, or the core. It is explained in more detail in \autoref{sec:majorComponents}. The only other ``exciting'' parts are the ``MenuButton'' component attached to the buttons, and the ``MainSceneChanger'' component.
+The interesting pieces in this scene are as following:
+%\textbf{``\_FallbackGame''}
+\begin{itemize}
+%fallback
+    \item \textbf{\_FallbackGame}
+    \begin{itemize}
+        \item[] ``\_FallbackGame'' is a prefab, and it came to be after a bug found late in the development. Shortly explained, the \hyperref[subsubsec:LPP]{LaserPointerPrefab} prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpose of this ``\_FallbackGame'' object was to check for a player(a ``LaserPointerPlayer'' prefab) and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
+    \end{itemize}
+    \item \textbf{LaserPointerPlayer}
+    \begin{itemize}
+        \item[] The ``LaserPointerPlayer'' prefab was a modified version of the ``Player'' prefab which is shipped out of the box with Steam VR. The ``Player'' prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component(``LaserPointer'') was added to control this model. 
+    \end{itemize}
+    
+%eventmanager
+    \item \textbf{EventManager}
+    \begin{itemize}
+        \item[] The EventManager is a class which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. making the events static means that other components does not need a reference to the active EventManager in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a function which takes the same parameters as the delegate type of the event, and append that function to the event. Like this: 
+        \begin{lstlisting}[language=C]
+// Subscribe to event
+EventManager.Name_of_event += Name_of_function;
+
+// Unsubscribe from event
+EventManager.Name_of_event -= Name_of_function;
+        \end{lstlisting} 
+        This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the LaserPointer, a component attached to the \hyperref[subsubsec:LPP]{LaserPointerPlayer} object, which gives the EventManager information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
+    \end{itemize}
+    
+%colormanager
+    \item \textbf{ColorManager}
+    \begin{itemize}
+        \item[] ``ColorManager'' is a simple component. All it does is provide a way to define colors in the Unity inspector and a public static instance of this object. This public static object reference makes the color available anywhere within the scene without having to instantiate an instance of this class or having a reference to one. It is also set up to have a Singleton architecture, meaning that there will only ever be a maximum of one instance of this class at any given time. 
+    \end{itemize}
+    
+%uibutton
+    \item \textbf{MenuButton}
+    \begin{itemize}
+        \item[] ``UIButton'' is an abstract component, and also the parent class of ``MenuButton''. Its function is to provide an animation for pressing it, and also give the possibility to add functions to trigger when it is pressed. Functions can either be added through code, or through the inspector in Unity. To achieve this possibility an Event class inheriting from the generic ``UnityEvent\textless T\textgreater'' class was created. The ``T'' can be replaced with whatever type you want to pass to this event. In this case:
+        \begin{lstlisting}[language=C]
+[Serializable]
+public class ButtonEvent: UnityEvent<UIButton> { }
+
+public ButtonEvent onButtonPressed;
+        \end{lstlisting}
+        As we can see, the ``ButtonEvent'' inherits from ``UnityEvent\textless UIButton\textgreater''. This means that functions subscribed to this event will get a UIButton object passed to them. This was to ensure that any property or functionality of any subclasses of UIButton could be used if needed. The UIButton class itself contains no useful information to be used by the subscribed function. The ``[Serializable]'' part along whith the public ``ButtonEvent'' variable, the subscriptions can be done trough the Unity inspector. Calling all the subscribed functions is just a matter of calling ``.Invoke()'' and passing an instance of the required type along with it. like this:
+        \begin{lstlisting}[language=C]
+// "this" is in this case the UIButton instance
+onButtonPressed.Invoke(this);
+        \end{lstlisting}
+        
+        Current sub-classes are: ``MenuButton'', ``ActionButton'', and ``ModeButton''. 
+        \end{itemize}    
+        
+%SceneChanger
+    \item \textbf{MainSceneChanger}
+    \begin{itemize}
+        \item[] ``SceneChanger'' is an abstract component, and also the parent class of ``MainSceneChanger''. All it does is provide a method for transitioning to another scene by fading to black and then fading back in to the new scene. To do this it utilizes the ``SteamVR\_LoadLevel.Begin()'' method, providing the name of the scene to load and the duration of the fade as parameters.
+        
+        Current sub-classes are: ``MainSceneChanger'', and ``AlgDatSceneChanger''.
+    \end{itemize}
+        
+    
+    \item \textbf{}
+    \begin{itemize}
+        \item[] 
+    \end{itemize}
+    
+\end{itemize}
+
+\subsubsection{Major Components}
+\label{sec:majorComponents}
+Now, it is time to explain the most crucial bits of the code. The different pieces will be classified as either one of these: 
 \begin{itemize}
     \item A component - A C\# class inheriting from MonoBehaviour.
     \item A prefab - A template for a game object which can be used to spawn predefined game objects at run-time or for speeding up the scene building process.
@@ -32,14 +88,14 @@ The different pieces will be classified as either one of these:
     \item An interface - A C\# interface
 \end{itemize}
 
-\subsubsection{LaserPointerPlayer} \label{subsubsec:LPP} 
-The LaserPointerPlayer prefab was a modified version of the Player prefab which is shipped out of the box with Steam VR. The Player prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component/script was add to control this model. 
+%\subsubsection*{LaserPointerPlayer} \label{subsubsec:LPP} 
+%The ``LaserPointerPlayer'' prefab was a modified version of the Player prefab which is shipped out of the box with Steam VR. The Player prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component was added to control this model. 
 
-\subsubsection{\_FallbackGame}
-\_FallbackGame is a prefab, and it came to be after a bug found late in the development. Shortly explained, the \hyperref[subsubsec:LPP]{LaserPointerPrefab} prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpos of this \_FallbackGame object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. And since there would only every be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. These are the EventManager and the ColorManager. 
+%\subsubsection*{\_FallbackGame}
+%``\_FallbackGame'' is a prefab, and it came to be after a bug found late in the development. Shortly explained, the \hyperref[subsubsec:LPP]{LaserPointerPrefab} prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpose of this ``\_FallbackGame'' object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
 
 %In the prototype the sorting algorithms are based around a "SortManager", an "EventManager", the "SortingElement", the "ISortingAlgorithm", and the "GameAction". 
-\subsubsection{SortingManger}
+\subsubsection*{SortingManger}
 The SortingManager is a component which basically glues everything together and keeps track handles most of the logic for the flow of the game. Basically the big boss commanding all its minions. This class is however dependent on a lot of other smaller components. This class does not know \textit{how} to do things, only \textit{what} to do. Therefore it must have references to the components which actually know \textit{how} to perform these actions or handle specific events. It does not only know \textit{what} to do, it also knows \textit{when this is allowed} to do. In other words, it keeps track of a bunch of states and when it is notified of some interaction happening, it will decide whether or not this is legal and act accordingly. 
 Some references it keeps are :
 \begin{itemize}
@@ -54,10 +110,10 @@ Some references it keeps are :
 \end{itemize}
 
 %this needs a rewrite 
-\subsubsection{Arrays and ElementAnimator} \label{subsubsec:Arrays}
+\subsubsection*{Arrays and ElementAnimator} \label{subsubsec:Arrays}
 "Arrays" and "ElementAnimator" are components used in the sorting algorithms scene. They handle the logic of how the different actions affect the array(s) and their respectful animation definitions, and last but not least which array it should perform the action on. In the beginning they were the same component, but it got really big and I wanted to separate the Animations of the different actions with the logic behind them. And hence they became two. However, it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
 
-The "Arrays" component is also an evolution from "ArrayManager". As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the "Array" component was created. It stole the logic from "ArrayManager" and added some more to handle several arrays. The Arraymanager was cut down to only keep track of its elements. 
+The "Arrays" component is also an evolution from "ArrayManager". As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the "Arrays" component was created. It stole the logic from "ArrayManager" and added some more to handle several arrays. The Arraymanager was cut down to only keep track of its elements. 
 So the history went like this:
 \begin{itemize}
     \item ArrayManager
@@ -65,7 +121,8 @@ So the history went like this:
     \item ArrayManager, Arrays and ElementAnimator
 \end{itemize}
 
-\subsubsection{EventManager}
+\begin{comment}
+\subsubsection*{EventManager}
 The EventManager is a class which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. making the events static means that other components does not need a reference to the active EventManager in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a function which takes the same parameters as the delegate type of the event, and append that function to the event. Like this: 
 \begin{lstlisting}[language=C]
 // Subscribe to event
@@ -76,33 +133,28 @@ EventManager.Name_of_event -= Name_of_function;
 \end{lstlisting} 
 
 This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the LaserPointer, a component attached to the \hyperref[subsubsec:LPP]{LaserPointerPlayer} object, which gives the EventManager information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
+\end{comment}
 
-\subsubsection{SortingAlgorithm} \label{subsubsec:SortingAlgorithm}
-SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement and a set of virtual methods which already has a definition but can be overridden by the sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm. The CheckForFocusChange method should send trigger an event in the EventManager when the algorithm reaches a state where there is a change in which elements are in focus.
+\subsubsection*{SortingAlgorithm} \label{subsubsec:SortingAlgorithm}
+SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement, a set of virtual methods which already has a definition but can be overridden by the sub-classes, and a set of defined methods which will always be the same for all sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm. The CheckForFocusChange method should send trigger an event in the EventManager when the algorithm reaches a state where there is a change in which elements are in focus.
 
-\subsubsection{GameAction}
+\subsubsection*{GameAction}
 GameAction is an abstract class which all actions that a user can perform inherits from. This class contains very little functionality as its reason for existing was to be able to group several different actions under the same type, such that collections could be made. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 
 
 
-\subsection{Bugs and stumbles}
-% the problem of VR player not beeing deleted between scenes, and the solution to that
-Improper use of the player prefab from the Steam VR Plugin was the source of one of the bugs found during development of this prototype. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of my scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to have create a pre start scene scene and a fallback prefab. Having this scene and fallback prefab also turned out to be a better architectural design. The idea behind was to create/load all the game objects which was common to all scenes in this pre start scene, and not destroy them on scene changes. The fallback prefab would be added to all other scenes and if the game had not been started from the pre start scene it would do the same as the pre start scene would; load the common objects and components.
-
-
-
-%the player
-\subsection{Features}
+\subsubsection{Features}
 The following features were present in the final version of the prototype:
 
-\subsubsection{Common to all scenes}
+\subsubsection*{Common to all scenes}
 \begin{itemize}
     \item Player - A camera and controller reflecting the physical orientation and position of the player hand his/her hands/controllers. Also has a laser pointer in the right hand for interacting with the world
     \item Show outline on interactive objects when hovering over with the laser pointer
     \item Interact with interactive objects by pressing the trigger button on the controller with the laser pointer while pointing at it
     \item Buttons - Interactive object
+    \item Show which buttons are disabled by changing their color, and the color of the outline when hover over
 \end{itemize}
 
-\subsubsection{Over world}
+\subsubsection*{Over world}
 \begin{itemize}
     \item Show available courses as different buttons
     \item Course buttons - Loads the button's course
@@ -111,7 +163,7 @@ The following features were present in the final version of the prototype:
     \end{itemize}
 \end{itemize}
 
-\subsubsection{Algorithms and Data Structures}
+\subsubsection*{Algorithms and Data Structures}
 \textbf{Course hub(entry point):}
 \begin{itemize}
     \item Show available topics as buttons
@@ -208,8 +260,17 @@ The following features were present in the final version of the prototype:
         \item Split - Splits the selected array in two halves
         \item Merge - Start the merge of two arrays
     \end{itemize}
-    \item Show which buttons are disabled by changing their color, and the color of the outline when hover over
     \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
     
 \end{itemize}
+
+\subsection{Bugs and stumbles}
+% the problem of VR player not beeing deleted between scenes, and the solution to that
+Improper use of the player prefab from the Steam VR Plugin was the source of one of the bugs found during development of this prototype. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of my scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to create the  \_FallbackGame prefab, whose functionality is already described in the previous part. After this prefab was constructed, all that was left was just to replace the player prefab in all the scenes and add this prefab instead. Also, the ColorManagers, and EventManagers could be removed from the scenes, as they were included in the fallback prefab. This also made for a better architectural design as any changes to the ColorManager or EventManager would be applied instantly to all scenes by just altering the prefab, keeping colors and settings consistent across the game. 
+
+\subsection{Testing}
+This section will present the results of the testing, without analyzing them. That part comes in the discussion section/chapter. 
+
+%the player
+
 

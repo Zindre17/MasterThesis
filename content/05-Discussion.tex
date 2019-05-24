@@ -1,4 +1,8 @@
 \section{Discussion}
+\label{sec:Discussion}
+\todo{Denne delen trenger fortsatt mye jobb}
+
+
 This chapter will process the information and experience gathered and gained throughout the development and testing, and reflect around them. What was done well? What could have been done better? What have I learned? Does the results make sense? Is the data gathered sufficient for reaching a conclusion? Questions like these are what you might find in this chapter. Starting with the process and planning, then moving on to the development, the testing after that, and finally the results.
 
 \subsection{Planning and Process}
@@ -20,7 +24,7 @@ IEnumerator SomeAnimation(){
     float duration = .6f;
     float elapsed = 0f;
     float prevTime = Time.time;
-    //This while loop will run one iteration of the loop every frame for .6 seconds. This makes the animation's duration independent of the frame-rate
+    //This while loop will run one iteration of the loop every frame for .6 seconds. This way of writing the coroutine makes the animation's duration independent of the frame-rate
     while(elapsed < duration){
         // Do something every frame here
         ...
