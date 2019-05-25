@@ -2,13 +2,14 @@
 \label{sec:Discussion}
 \todo{Denne delen trenger fortsatt mye jobb}
 
+% this can be in the discussion somewhere: but beware the code is practically only self commented. And not even that well self commented. I felt no need to comment the code, as I was constantly revisiting old code and doing improvements, and knew it pretty much inside out without the commenting. There were occasions where some comments could have saved me some time during some refactors though.
 
-This chapter will process the information and experience gathered and gained throughout the development and testing, and reflect around them. What was done well? What could have been done better? What have I learned? Does the results make sense? Is the data gathered sufficient for reaching a conclusion? Questions like these are what you might find in this chapter. Starting with the process and planning, then moving on to the development, the testing after that, and finally the results.
+This chapter will process the information and experience gathered and gained throughout the development and testing, and reflect around them. What was done well? What could have been done better? What have I learned? Does the results make sense? Is the data gathered sufficient for reaching a conclusion? Questions like these are what you will find reflections around in this chapter. Starting with the process and planning, then moving on to the development, the testing after that, and finally the results.
 
 \subsection{Planning and Process}
-When it comes to planning, it would seem as though the previous project was completely forgotten as I have learned next to nothing from it when it comes to planning and process. The same mistakes done in the previous project repeated. Too little upfront planning, and just diving straight into the development. However, the biweekly meeting with my supervisor forced me to plan a bit ahead, and it gave me a sense of direction and also some sense of urgency to complete certain tasks, or reach certain milestones.
+%When it comes to planning, it would seem as though the previous project was completely forgotten as I have learned next to nothing from it when it comes to planning and process. The same mistakes done in the previous project repeated. Too little upfront planning, and just diving straight into the development. However, the biweekly meeting with my supervisor forced me to plan a bit ahead, and it gave me a sense of direction and also some sense of urgency to complete certain tasks, or reach certain milestones.
 
-If I were to try to defend the "jumping right into coding and skipping planning" it would be that creating a game is a highly creative task. And coming up with ideas for improvements or new features can be really hard without actually having anything as reference. Therefore, just developing something, and then testing it might give inspiration for new ideas. On the other hand just making something without a solid plan usually comes with a bunch of spaghetti code. Which will probably need to be rewritten at some point and it might be a time consuming task. Maybe more so than properly planning the architecture/structure in advance. 
+%If I were to try to defend the "jumping right into coding and skipping planning" it would be that creating a game is a highly creative task. And coming up with ideas for improvements or new features can be really hard without actually having anything as reference. Therefore, just developing something, and then testing it might give inspiration for new ideas. On the other hand just making something without a solid plan usually comes with a bunch of spaghetti code. Which will probably need to be rewritten at some point and it might be a time consuming task. Maybe more so than properly planning the architecture/structure in advance. 
 
 
 
@@ -16,33 +17,10 @@ If I were to try to defend the "jumping right into coding and skipping planning"
 
 As an after thought, the way I handled animations was probably not the most efficient way. And by efficient, I mean efficient in terms of creating, not in terms of execution and performance. The animations were all done by code, which is kind of waste when there exists a tool for creating animations in the Unity editor. Using the tool in Unity allows for a visual generation of animations, which is a lot easier than sketching or imagining the different positions and rotations it should have throughout the animation. In the beginning of the project some experimentation was done with the animator tool, but, as a coder, it felt a bit weird. The tool seemed fairly easy to use, at least for objects already in the scene. The problems began when I needed the animation to spawn different objects and then do animations on them. I will admit that not a lot of effort was put in to figuring out this, and instead decided to settle for writing the animations with code, because I already knew how to do it this way.
 
-%this might actually go in the result part instead...
-The way the animations were coded was by using coroutines. Couroutines are a part of the UnityEngine library, and they work by defining a function with a return type of IEnumerator, and should contain the code for doing the animation, i.e move, rotate, and or scale objects. And to start the defined animation one needs to call the StartCoroutine function and provide the animation function as a parameter to that function. 
-Like this:
-\begin{lstlisting}[language=C]
-IEnumerator SomeAnimation(){
-    float duration = .6f;
-    float elapsed = 0f;
-    float prevTime = Time.time;
-    //This while loop will run one iteration of the loop every frame for .6 seconds. This way of writing the coroutine makes the animation's duration independent of the frame-rate
-    while(elapsed < duration){
-        // Do something every frame here
-        ...
-        float time = Time.time;
-        elapsed += time - prevTime;
-        prevTime = time;
-        yield return null;
-    }
-    //Do something at the end of the animation here
-    ...
-}
+A part of the architecture or structure of the game which was not done optimally, was also linked to the animations. A lot of the animations contained logic in them, which made the scene reliant on the animations completing properly for the game to behave properly. This is bad design, and was the cause for a lot of the bugs having to be dealt with at the end of the development. Removing the logic from the animations would require some components to keep track of more states, but the payoff would be huge in terms of clean code, and less error prone code. 
 
-...
-// Somewere inside a function which should trigger the SomeAnimation animation
-StartCoroutine(SomeAnimation());
-\end{lstlisting}
+During the development, I always had performance in mind, as VR games need to run smoothly in order to decrease the strain on the user in terms of getting motion sick. This made me very hesitant of using the inbuilt ``Update'' method of all the components. This method runs every frame for every component in the scene, and therefore means that doing a lot of work in these methods is a bad idea. However, The scenes in this prototype does not contain a lot of components compared to a lot of other games, and I overestimated the performance hit of using this method for small things. The work-arounds also caused a lot time loss due to putting logic which could have gone into the ``Update'' method in the ``Start'' or ``Awake'' methods instead. This caused a lot of null pointer exceptions due methods being called on instances not yet created, due to the nature of order of creation in scene elements. It also made debugging harder as the things happening is not just tied to the update method, but instead tied to many methods all over the place. This also makes it harder for new people to read and understand the flow of the code. I was even hesitant to use the ``Update'' method in combination with a boolean which it would check before doing any actual work, because I thought that the act of checking this boolean every frame could impact performance. The reality is that it will not affect the performance, unless there are a vast amount of components. The only component, or one of very few, I created which utilized this method was the ``EventManager''. This component used to update method to shoot a ray cast from the laser every frame to decide the length of the laser and also to interact whith what it was pointed towards. The point here is that using the ``Update'' method would have simplified a lot of things, made the code cleaner and easier to read, and less buggy. Lesson learned.
 
-The special part about these coroutines is that is executes code until it reaches a "yield return ..." statement, then it will stop executing, and then continue from where it left off at the next frame. There is no limit on the amount of "yield return ..." statements a coroutine can have. the value after "yield return" can be either null or one of several different types for waiting specific times until resuming execution, like a set amount of time in seconds, or at the end of the frame instead of the beginning of the frame, and so on. 
 
 \subsection{Testing}
 Testing was supposed to have started in late April or early May, but ended up happening mid May. The reason for this was a mixture of things. I was attending a confirmation of my cousin in Stavanger, and due to the SAS-strike I had to travel earlier than needed, and I got home later than planned. During this period I was not able to work too much on the project. This was late in April. Another reason was that I had a realization when I was showing VR to a friend and she wanted to see what I was making. I realized a bunch of tweaks I could make to improve the usability. And some of these tweaks took a lot longer to implement than I had thought. And since quite a few bugs were found in the last projects testing, I thoroughly tested the application in ways it was not meant to be used. This unveiled many bugs which I had not noticed earlier because I, the creator, know how the application is supposed to work and use it thereafter when testing new features. However, some of these bugs were surprisingly hard to squish, but As the testing went smoothly around this time, it seems it was not in vain. 
