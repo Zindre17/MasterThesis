@@ -52,7 +52,7 @@ Unreal Engine uses C++ for development. However, it also provides "blueprints" w
 \label{fig:unreal}
 \end{figure}
 
-\subsubsection{SteamVR plugin}
+\subsubsection{SteamVR Plugin}
 Since there exist many different forms of controllers and HMDs, Valve has created a plugin for Unity and Unreal Engine, SteamVR plugin\cite{SteamVRPlugin}. This plugin makes it possible to support a wide variety of devices using the same code. Using this will minimize the code needed to support a wide variety of devices. The difference between a VR game and a normal 3D game is that VR games need to somehow reflect the users movements and actions in real life within the game. I.g move the hands to where the user moves their controllers, look in the direction the user is pointing their head, and all these things. The focus of this plugin is therefore to make the camera follow the users head, load models of the controllers in use, make these controller models follow the users hands, handle the inputs of these, and estimate how the users hands look while using these controllers.
 
 
@@ -65,7 +65,7 @@ Since there exist many different forms of controllers and HMDs, Valve has create
 
 
 
-\subsection{Multimedia Learning Theories}
+\subsection{Multimedia Learning Theories} \label{sec:MLT}
 
 The cognitive theory of multimedia\cite{Mayer2014}, which is based upon the cognitive load theory\cite{CognitiveLoadTheory}, states that the visual input and the auditory input are processed on different channels, with a limited cognitive capacity for processing these inputs. This means if the visual channel is overloaded with input, the auditory channels processing will suffer, and vice versa. From this follows that irrelevant images, sounds, or words can harm the learning in the learner, and should therefor be avoided. In the book Multimedia learning\cite{Mayer2009}, Mayers present twelve principles for better design when using multimedia for presenting material. These principles are backed by both the cognitive theory of multimedia, and empirical studies.
 
@@ -172,7 +172,7 @@ The System Usability Scale was used in the previous project as the next section 
 
 \subsection{Previous Work}
 
-As already stated, this project is a continuation of another project. The prototype developed in that project consisted of a single scene, which was for teaching sorting algorithms. This scene had implemented two sorting algorithms: bubble sort and insertion sort. \href{https://youtu.be/7m7B7zJ4KIQ}{Click here} to see a video of the functionality and contents of the first prototype. The interaction was purely through pointing with a laser in the right hand and pressing the trigger when pointing at objects which were interactive. This prototype was also user tested, though only by 5 people. The user test consisted mainly of a usability test, utilizing the System Usability Scale. What the results of this testing showed was that usability was closely linked with the whether the player had taken the course or not. 
+As already stated, this project is a continuation of another project. The prototype developed in that project consisted of a single scene, which was for teaching sorting algorithms. This scene had implemented two sorting algorithms: bubble sort and insertion sort. \href{https://youtu.be/7m7B7zJ4KIQ}{Click here} to see a video\cite{PrevUniVRsity} of the functionality and contents of the first prototype. The interaction was purely through pointing with a laser in the right hand and pressing the trigger when pointing at objects which were interactive. This prototype was also user tested, though only by 5 people. The user test consisted mainly of a usability test, utilizing the System Usability Scale. What the results of this testing showed was that usability was closely linked with the whether the player had taken the course or not. 
 
 \subsubsection{Design}
 As can be seen in video of the previous prototype, the design of the scene where the sorting happens is formed kind of like a semi circle. To the front, the representation of the array is shown, with the array elements represented as yellow cuboids with height visually representing their value, and the array itself represented as a cuboid laying on the ground with its elements hovering above it. To the left of the array, still to the front, lies a cube representing the storage area, where algorithms needing to save values outside of the array can place them. On the floor in front of where the player stands, there is a panel. This panel shows the state of the algorithm, the pseudo code for the algorithm, and shows output from the most recent comparison of elements. To the left are two walls with buttons aligned vertically. One for selecting algorithm, and one with buttons for starting a demonstration of the algorithm, starting the algorithm over again, and getting a new randomly generated array. The buttons are thin cuboids with big labels on them representing their respective actions. The other side, to the right, contains a wall with action buttons. The available actions are compare, swap, store, and copy to.
@@ -192,7 +192,7 @@ The architecture in the previous project, was focused around the game having to 
 \subsubsection{Testing}
 The testing was quickly brushed over in the introduction of this prototype, saying it was mainly a SUS questionnaire and that 5 people participated. The results of the SUS was a score of 67.5 which is below average. However looking at the background of the testers the scores could indicate that having taken the course in advance was correlated to a higher ease of use. The average score of people having had the course was to 75.83, which is a good score. Just watching the tests also gave a lot of insight. People thought that the prototype was some some sort of playground, where one could also see how some algorithms worked. This was not the case, and it confused the testers. The laser pointer interaction seemed to be intuitive, but how to perform the different actions on the array was not very intuitive. 
 
-\subsubsection{Unfinished ideas}
+\subsubsection{Unfinished Ideas}
 Some of the features or ideas for the project was not implemented due to time constraints and or other difficulties. The ones worth mentioning are these:
 \begin{itemize}
     \item Voice - Add voice which gives instructions instead of/in addition to the text.
