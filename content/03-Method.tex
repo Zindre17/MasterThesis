@@ -1,11 +1,10 @@
 %denne delen skal forklare hvordan spillet har blitt implementert og hvordan teorien har blitt utnyttet
-\section{Method}
-\todo{Denne delen er klar for gjennomlesing . Den er litt kort, men vet ikke helt hva mer som skal være med}
+\section{Methodology}
 
-This section will present how the prototype was planned, the different choices made in regards to how the development should be done, and also how the testing should be performed. A lot of the theory presented in the previous chapter/section\todo{which do i use?} does not really fit in this section as most of it is only applicable to very specific things, and this section is more of a general description. Fear not though, the theory will be applied in the two next chapters/sections, results(\autoref{sec:Result}) and discussion(\autoref{sec:Discussion}). These will go more into the details, and can then see how the theory supports or is against these.  
+This section will present how the prototype was planned, the different choices made in regards to how the development should be done, and also how the testing should be performed. 
 
 \subsection{General Plan}
-The plan going into this project was to continue the development of the prototype developed in the previous project. Making improvements and adding new features to it, and then test it again to see if it actually improved. As far as design goes there will not be any major changes, unless something which forces this occurs. There will however be additions to it, and these additions will try to achieve a similar style. This is to be consistent with how things work, not causing unnecessary confusion in the players. The planning of the expansion of content and making improvements will happen in iterations. Come up with a next step(a general idea, no specifics), figure out how to implement this idea, implement it, then from there figure out where to go next. The next step for each iteration would mostly come from the meetings with the supervisor.  
+The plan going into this project was to continue the development of the prototype developed in the previous project. Making improvements and adding new features to it, and then test it again to see if it was actually improved. As far as design goes there will not be any major changes, unless something which forces this occurs. There will however be additions to it, and these additions will try to achieve a similar style. This is to be consistent with how things work, not causing unnecessary confusion in the players. The planning of the expansion of content and making improvements will happen in iterations. Come up with a next step(a general idea, no specifics), figure out how to implement this idea, implement it, then from there figure out where to go next. The next step for each iteration would mostly come from the meetings with the supervisor.  
 
 Coming from the previous project the structure of the prototype was just a single scene. However, the plan for a finished product looked something like that which can be seen in  \autoref{fig:plan}. The question marks represent any number of courses or topics, and the structure is hierarchical. The overworld is at the top of the hierarchy and form there the player can navigate to any course hub. The course hubs are the next level of the hierarchy where the player can either navigate back to the overworld, or to any topic within the course. The topics are the lowest level in the hierarchy, and the player can only navigate back to its course hub from there. This hierarchy will be the guide when adding new content in this project.
 
@@ -50,56 +49,135 @@ After the overworld and navigation was added, I wanted to add the merge sort alg
 \subsubsection{Iteration 6} \label{sec:It6}
 This time I had realized that I had forgotten to improve things which were commented on or discovered during the testing in the previous project. I had been too focused on adding new features and improving stability and architecture, and forgotten probably the most important part; improving the usability. This iteration would therefore consist of making a lot of improvements in terms of usability and thoroughly testing the application to find and squash bugs before the testing started. 
 
-%Moving on to this project, I want to keep the design, and rather just modify things if a better solution presents itself. 
-
-%For this I wanted to move away from the design the groups from last year had. I thought its focus was not where it should be, as it seemed the focus was more on "which cube has the bigger value?" instead of "what is the next step in the algorithm?" or "which two cubes do I compare next?". The design I went for was also based on cubes to represent the array, but instead of picking them up, and moving them with around with your hands, it is based on selections and actions. Selections happen through pointing with a laser pointer at the array elements and pressing the trigger button, and actions happen through pointing at buttons with the same laser pointer and pushing the trigger button. The idea is that it will be less distracting than picking up blocks. The players might want to start throwing or playing with the cubes rather than what is intended. The point and click interaction hopefully disables these kinds of distracting curiosity. It should, however, be noted that this design was not reached until a later point in the projects, as I had experimented with other forms of interaction. It was also point and click based, but without the action buttons. That design proved to be ill suited for other algorithms than the bubble sort, but was not discovered until the implementation of the insertion sort algorithm started. Also, the environment is very plain and nothing fancy, with the intent behind to save development time, but also keep the focus on the algorithms. And following the theory presented in the previous chapter, the demonstrations and feedback should be in the form of animations and sound.
-
-%Another aspect I thought was important was for the game to easily add new algorithms, and there will therefore be more work to define what is allowed or possible to do, and how to define an algorithm. In other words, there will be more work to get everything working, but there will be less work to add new algorithms once the core is working properly.
-
-
-
-%this needs to be here somewhere, not in background
 \subsection{Development}
 The choice of game engine and programming language fell on the decision from the previous project, namely Unity and C\#, as this project's intentions are to directly improve upon this same prototype. Recreating the previous prototype in another game engine would be a lot of unnecessary work, since the plan is to keep everything and just build on top of the existing prototype, and the other game engine would need to be learned, and probably the programming language the game engine uses as well. This does not fit in with the time schedule of this project. In addition, the gained experience with the game engine from the previous project would shorten further development times. In other words, I was already familiar with using Unity and C\# at this point and did not really need to spend more time on learning the engine. This project would continue to work on the same public repository on Github as in the previous project. 
 
-This project does not intend to alter the architecture of the existing prototype. It should still focus on being modular, as this makes it easier for other developers to extend it and improve upon it. Having the prototype keep evolving and eventually encompassing a plethora of courses is kind of the idea or hope here. However, considering the time constraint making things work is more important than having a good architecture. At least in the short term scenario. 
-%The chosen game engine in the previous project, and therefore this project also, was Unity, because it has a bigger/more active community which will help when problems or confusion arise. Unity is also considered to be better suited for indie developers. Seeing as I am the only one developing this application, I am more comparable to an indie developer rather than a company.
+This project does not intend to alter the architecture of the existing prototype. It should still focus on being modular, as this makes it easier for other developers to extend it and improve upon it. Having the prototype keep evolving and eventually encompassing a plethora of courses is kind of the idea or hope here. However, considering the time constraint, making things work is more important than having a good architecture. At least in the short term scenario. 
 
+\subsubsection{Requirements}
+Following is a list of functional requirements for the project, sorted by the scenes. Non-functional requirements were not set, except for keeping the prototype performance efficient.
 
-%The resourses used for learning this in the previous project was a combination of watching youtube videos, reading the documentation, doing tutorials, and experimenting. The main channels used were \href{https://www.youtube.com/channel/UCLO98KHpNx6JwsdnH04l9yQ}{FusedVR} for VR specifics and \href{https://www.youtube.com/user/Brackeys}{Brackeys} for general Unity things. Experimentation proved to be very effective as it gives hands on experience and a sense of how to work with this technology. Youtube videos are great for getting insight into how certain problems can be solved, and to learn what common pitfalls for beginners are and how to avoid these.
-%In order to be able to develop this game or application, Unity had to be learned. This was done through the Unity documentation and their own tutorials, as well as through youtube videos, from channels such as \href{https://www.youtube.com/user/Brackeys}{Brackeys}, and experimentation. Experimentation is very effective as it gives hands on experience and a sense of how to work with this technology. Youtube videos are great for getting insight into how certain problems can be solved, and to learn what common pitfalls for beginners are and how to avoid these. 
+\subsubsection*{Common to all scenes}
+\begin{itemize}
+    \item Player - A camera and controller reflecting the physical orientation and position of the player hand his/her hands/controllers. Also has a laser pointer in the right hand for interacting with the world
+    \item Show outline on interactive objects when hovering over with the laser pointer
+    \item Interact with interactive objects by pressing the trigger button on the controller with the laser pointer while pointing at it
+    \item Buttons - Interactive object
+    \item Show which buttons are disabled by changing their color, and the color of the outline when hover over
+\end{itemize}
 
+\subsubsection*{Over world}
+\begin{itemize}
+    \item Show available courses as different buttons
+    \item Course buttons - Loads the button's course
+    \begin{itemize}
+        \item Algorithms and Data Structures
+    \end{itemize}
+\end{itemize}
 
+\subsubsection*{Algorithms and Data Structures}
+\textbf{Course hub(entry point):}
+\begin{itemize}
+    \item Show available topics as buttons
+    \item \textbf{Topic buttons} - Loads the button's topic
+    \begin{itemize}
+        \item Data structures
+        \item Sorting algorithms
+    \end{itemize}
+    \item Back navigation button - Go back to the over world
+\end{itemize}
 
-%\subsection{Summary of Plan}
-%Something which was planned in the previous project, but not achieved was the environment where the user could navigate to different courses and from there to different parts of these courses. My supervisor had suggested a virtual school ground or university ground and have different courses behind different doors or at different locations in this virtual environment. Despite the prototype only having content within one course, this project would attempt to implement this in some form. However, at a low priority. Expanding and improving functionality should be the main focus of this project. 
+\textbf{Data structures:}
+\begin{itemize}
+    \item \textbf{Play mode} - Learn how the selected structure works
+    \begin{itemize}
+        \item Show available structures as buttons
+        \item \textbf{Structure buttons} - Go to play mode for selected structure
+        \begin{itemize}
+            \item Stack
+            \item Queue
+        \end{itemize}
+        \item \textbf{Stack and Queue} - Same play mode
+        \begin{itemize}
+            \item Show a representation of the data structure
+            \item Push/Enqueue button - Animate how the structure handles addition of data
+            \item Pop/Dequeue button - Animate how the structure handles removal/retrieval of data
+            \item Use case button - Go to use case mode for this structure
+            \item Back navigation button - Go back to course hub
+            \item Show explanation of each button
+            \item Show error message when doing an illegal action containing the error (Overflow/Underflow) and when it occurs
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Use case mode} - See how the selected structure can be used in a real life scenario
+    \begin{itemize}
+        \item \textbf{Stack and Queue} - Same use case: Image region growing
+        \begin{itemize}
+            \item Back navigation button - Go back to play mode for this structure
+            \item Show a description of what this use case is when entering the use case mode. Press the button on this panel to hide it and start the algorithm.
+            \item Show a black and white image with random pattern. Each pixel is an interactive object.
+            \item Pixel(interactive object) - Select (show a border color to indicate that it is selected)
+            \item Show a representation of the data structure selected before entering use case mode
+            \item Show a representation of the the item from the data structure is currently being read/used ("Next" as it points to the next pixel to check)
+            \item Show a representation of the internal state of the algorithm (Pattern so far, visited pixels, which pixel is next, etc...)
+            \item Show an explanation of the color coding in the representation of the algorithm
+            \item \textbf{Action buttons}
+            \begin{itemize}
+                \item Push/Enqueue - Animate addition of the selected Pixel to the data structure
+                \item Pop/Dequeue - Animate removal of next pixel from the data structure and into the "Next" position. 
+                \item Check - Animate the checking(whether it is or is not part of the pattern) of the pixel.
+            \end{itemize}
+            \item \textbf{Algorithm interaction buttons}
+            \begin{itemize}
+                \item Demo(toggle button) - Start/stop the demonstration of the algorithm. The demonstration animates how the algorithm works step by step.
+                \item Prev - Undo the last step in the algorithm(animate)
+                \item Next - Do the next step in the algorithm(animate)
+            \end{itemize}
+            \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
+            \item Data items popped or dequeued into "Next" will fire a laser at the pixel it represents. To indicate which pixel should be checked next
+        \end{itemize}{}
+    \end{itemize}
+\end{itemize}
 
-%The ambition of this project is to add at least one sorting algorithm which is actually used in the real world, and add at least some content within another branch of the Algorithms and Data structures course. This will most likely be either tree-traversing algorithms, or demonstrating some data structures. Improving the existing sorting algorithm scene should also always be attempted. In terms of testing it should be striven after having more test subjects than that which was achieved in the previous project, and also with a higher quality in the testing. 
+\textbf{Sorting Algorithms}
+\begin{itemize}
+    \item Back navigation button - Go back to course hub
+    \item Show available sorting algorithms as buttons
+    \item Show the array as a horizontal set of cuboids(array elements) on top of another cuboid(array stand or representation of the memory location). The elements has a height relative to their value: high value means a tall cuboid, and a low value means a short cuboid.  
+    \item Both the array and the the elements are interactive
+    \item Show a Cube representing the storage (where array elements can be temporarily stored)
+    \item Show a representation of the internal state of the algorithm
+    \item Show pseudo code for the selected algorithm
+    \item \textbf{Sorting algorithm buttons} - Generates a new random array and changes to this algorithm
+    \begin{itemize}
+        \item Bubble sort
+        \item Insertion sort
+        \item Quick sort
+        \item Merge sort
+    \end{itemize}
+    \item \textbf{Algorithm interaction buttons}
+    \begin{itemize}
+        \item Demo(toggle button) - Start/stop demonstrating the algorithm. The demonstration shows the algorithm step by step in the correct order and explains what it is doing.
+        \item Prev - Undo the last step in the algorithm(animate)
+        \item Next - Do the next step in the algorithm(animate)
+        \item New array - Generate a new random array
+        \item Restart - Resets the algorithm, and array back to start    
+    \end{itemize}
+    \item \textbf{Action buttons}
+    \begin{itemize}
+        \item Compare - Compare the value of two elements
+        \item Swap - Swap the values/position of one or two element(s)
+        \item Store - Clone one of the elements in the array to the storage
+        \item Copy to - Two step action: Copy selected element value into the next selection (limitations: can not copy to storage, use Store instead)
+        \item Pivot - Sets the selected element as a pivot
+        \item Split - Splits the selected array in two halves
+        \item Merge - Start the merge of two arrays
+    \end{itemize}
+    \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
+    
+\end{itemize}
 
+\subsubsection{Implementation}
+This part will talk a bit about how the major parts in the game was coded, how they work, and how they interact with each other.
 
-%A plan was needed before the development could begin. My supervisor had envisioned a sort of virtual university where one could navigate some sort of school or university grounds, and teaching different courses in different areas of this environment. My supervisor also had two groups the previous year which had similar projects where they were using VR to teach sorting algorithms. These were based around the user having to physically sort the cubes but in the way the algorithm dictated it. This idea and these projects would be the foundation for the prototype. 
-
-%An idea, and by that I mean an idea of how the game should be, was also needed before development could begin. My supervisor suggested that the game should be made in a way where it could include many different subjects, and be sort of a virtual university or school. He also suggested that I make the over world or hub look like a university or school, but I thought that it would hinder the inspiration of curiosity, because many people associate schools or class rooms with boredom or other uninspiring emotions. The theory behind game design also suggests that the environment should not be distracting, as the focus should be on the task at hand, or the demonstration. 
-
-%In Oculus Home one can design one's own home space with different interactive and decorative items, and one can visit one's friends homes too. The way this is done, is through breaking a glass orb, with a mini-representation of that home inside the orb(which can be seen in figure \ref{fig:oculussphere}), by throwing it at the floor, and your home is transformed into that of your friend's home. This was the inspiration for my game. I wanted the courses to be glass orbs with a model which could represent the course within them. I thought that this might be simple enough to not distract the user, while at the same time inspire some curiosity through the models inside the orbs. Due to time constraints and manpower, this prototype will only include one course; Algorithms and data structures. Within this course, sorting algorithms are the priority and other algorithms would only be implemented if there was time. 
-
-%\subsection{Development}
-% As already mentioned in the background, Unity supports several programming languages, but mainly C\# and javascript. The choice landed on C\# as this was the language used in the existing prototype. The reason for choosing C\# in the previous project was because the youtube tutorials was focusing on this language, that it seemed to be the easiest one to find help to problems for, as well as a personal preference. To be able to use any VR-kit without writing hardware specific code, the SteamVR Plugin for Unity would be used. To be able to work anywhere, the version control system Git would be used, and it should be hosted on Github, as a public repository. There was no need to use Unity's collaboration tool/version control system, Unity Collab, as there would only be one developer during the extent of this project.
- 
-% Hosting the project on GitHub in a public repository will enable other developers to further build upon this project, should it turn out to be a good one. And maybe one day it can live up to it's name; UniVRsity! 
- 
- 
- %The architecture in the previous project, was focused around the game having to be modular, and easily expanded. To do this, sorting algorithms had to be generalized such that the common functionality would not need to be re-implemented, instead only specifics for the new algorithm. The same went for user actions. They were also generalized such that it would be easy to add new actions. This architecture makes it a lot easier to add new algorithms and actions, but it requires more thought into the initial development. The algorithms was generalized fairly well in during the development, however, actions, not so much. Due to the way the algorithms were made, they were completely isolated from the arrays them selves, which meant that actions could not be generally designed. The result was actions just having a type, an enum describing what action it represents, and some integer values representing the position within the array the action should affect. This in turn meant that what the different types action actually does is up to whichever component is handling the action. The positive with this is that the action types can be reused in other scenes, as they have no actual actions linked to them. However, in case it probably would have been smarter to not have the sorting algorithms be disconnected from the array representation, and therefor the actions separated from them. 
- 
- 
- %As far as architecture for the prototype goes, it was more or less just a rough idea in the beginning and evolved as the development progressed. Another aspect I thought was important was for the game to easily add new algorithms, and there will therefore be more work to define what is allowed or possible to do, and how to define an algorithm. In other words, there will be more work to get everything working, but there will be less work to add new algorithms once the core is working properly.
-
-\subsection{Testing}
-%The testing in the previous project was very rushed and therefore poorly done. The test subjects were just thrown into the testing with little or no knowledge of what they were testing and what they should do. 
-% --- From the spez proj: For testing the prototype, I would use a System Usability Scale. The optimal testers would be people who are currently taking the course Algorithms and data structures and has no experience with VR. This test will give an indication of weather or not the prototype is intuitive and feels natural to use. These same test subjects will also be encouraged to give feedback on any part of the prototype to help me understand what could be done better, seen from a perspective of "fresh eyes". 
-
-The testing in this project will be fairly similar to the form of testing performed in the previous project, whose form was briefly touched upon in the Previous Work section.  This time there will be a short explanation before the testing starts about what the game is, and its intentions. It will give the testers some context in the form of what they can expect in terms of genre and setting. After the introduction of the game, the testers will play the game. No one will give guidance to the testers unless they explicitly ask for help. If a tester asks for help, it is a sign that some part of the game is not intuitive or something should be better explained within the game. The testers will be informed of this, to increase the threshold for asking for help. After the testers feel they have done enough, they will be asked to fill out a form. This form will contain a section regarding some background information of the tester, a part with the standard SUS questions for getting a usability score, and some general feedback regarding the game and their experience with it. The targets for this testing will be people who has taken or is taking the Algorithms and data structures course, as well as people who has not taken the course but has some experience and knowledge of programming. The level of VR experience a tester has is not of much importance, though a varied spectrum could be nice. This would open up the possibility to check for a connection between previous experience with VR and their understanding of the prototype. As already mentioned the previous project was only able to perform the testing with five people. This time around, the aim is to at least perform tests with double the amount of people.
-%When the coding in Unity started, I started with only the bubble sort algorithm in mind. This was a mistake, as this led to having to redo my design at least two times, and also had to redo the core of the sorting algorithms a couple of times as well. This was a huge loss of time, but I believe the core is now pretty sturdy and allows for easy addition of other sorting algorithms. Another big time loss occurred due to an update in the SteamVR Plugin. The development started when it was in version 1, and in version 2, which was launched at the end of September, they had redone the whole interaction system, which meant the interaction system in my game also had to be redone. It also took some time to figure out how this new interaction system worked.
-
-
-
+\subsection{Evaluation}
+The evaluation in this project will be fairly similar to the form of evaluation performed in the previous project, whose form was briefly touched upon in the Previous Work section.  This time there will be a short explanation before the evaluation starts about what the game is, and its intentions. It will give the participants some context in the form of what they can expect in terms of genre and setting. After the introduction of the game, they will play the game. No one will give guidance to them unless they explicitly ask for help. If a participant asks for help, it is a sign that some part of the game is not intuitive or something should be better explained within the game. The participants will be informed of this, to increase the threshold for asking for help. After the participants feel they have done enough, they will be asked to fill out a form. This form will contain a section regarding some background information of the participant, a part with the standard SUS questions for getting a usability score, and some general feedback regarding the game and their experience with it. The targets for this evaluation will be people who has taken or is taking the Algorithms and data structures course, as well as people who has not taken the course but has some experience and knowledge of programming. The level of VR experience a participant has is not of much importance, though a varied spectrum could be nice. This would open up the possibility to check for a connection between previous experience with VR and their understanding of the prototype. As already mentioned the previous project was only able to perform the testing with five people. This time around, the aim is to at least perform tests with double the amount of people.

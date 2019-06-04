@@ -1,8 +1,7 @@
 \section{Results} 
 \label{sec:Result}
-\todo{Denne delen trenger en del omskriving/omstrukturering og legge til test resultatene} 
 
-This section will present the results, in regards to development and testing. The part about development will touch upon structure, specifics of some components, and some bugs and stumbles which are worth mentioning. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next section: Discussion. 
+This section will present the results, in regards to development and testing. The part about development will touch upon the structure of the scenes and specifics of important parts of the scenes. The testing part will present test results without any interpretation, just numbers. The interpretation of the test results will come in the next chapter: Discussion. 
 
 \subsection{The Prototype}
 The development was halted in mid May, 2019, to give time for testing and writing the report. The final version of the prototype can be seen in \href{https://youtu.be/yOpMw9f9AtY}{this} video\cite{UniVRsity}. It shows how the prototype works, how it looks, and a general look into all its content. Some of the most important pieces of this software and how they work will be explained right after this, and the different pieces will be classified as either one of these: 
@@ -12,13 +11,20 @@ The development was halted in mid May, 2019, to give time for testing and writin
     \item A class - A C\# class.
     \item An interface - A C\# interface.
 \end{itemize}
-For more details the code can be found on \href{https://github.com/Zindre17/UniVRsity}{Github} Then finally an exhaustive list of the features in the prototype will be presented. 
+For more details the code can be found on \href{https://github.com/Zindre17/UniVRsity}{Github}\cite{Github}. Then finally an exhaustive list of the features in the prototype will be presented. 
 
 
 
 \subsubsection{Overworld}
-The overworld is just a plain with a wall on top of it, and some hovering text, showing the name of the prototype; ``UniVRsity''. The wall contains buttons for all the courses in the prototype, which is at this point in time only one; ``Algorithms and data structures''. 
+The overworld is just a plain with a wall on top of it, and some hovering text, showing the name of the prototype; ``UniVRsity''. The wall contains buttons for all the courses in the prototype, which is at this point in time only one; ``Algorithms and data structures''. The overworld can be seen in the video and in \autoref{fig:overworld}.
 %This scene, as well as all other scenes contain a ``\_FallbackGame'' prefab. This prefab is very shorty described the player and everything all scenes need, or the core. It is explained in more detail in \autoref{sec:majorComponents}. The only other ``exciting'' parts are the ``MenuButton'' component attached to the buttons, and the ``MainSceneChanger'' component.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/Overworld.png}
+\caption{The overworld.}
+\label{fig:overworld}
+\end{figure}
+
 The interesting pieces in this scene are as following:
 %\textbf{``\_FallbackGame''}
 \begin{itemize}
@@ -31,14 +37,14 @@ The interesting pieces in this scene are as following:
 %fallback
     \item \textbf{\_FallbackGame}
     \begin{itemize}
-        \item[] ``\_FallbackGame'' is a prefab, and it came to be after a bug which was found late in the development. Shortly explained, the ``LaserPointerPlayer'' prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpose of this ``\_FallbackGame'' object was to check for a player(a ``LaserPointerPlayer'' prefab) and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
+        \item[] ``\_FallbackGame'' is a prefab, and it came to be after a bug which was found late in the development. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of the scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to create this ``\_FallbackGame'' prefab. The purpose of this ``\_FallbackGame'' object was to check for a player(a ``LaserPointerPlayer'' prefab) and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
     \end{itemize}
     
     
 %eventmanager
     \item \textbf{EventManager}
     \begin{itemize}
-        \item[] The ``EventManager'' is a component which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. Having the events be static means that other components does not need a reference to the active ``EventManager'' in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a function which takes the same parameters as the delegate type of the event, and append that function to the event. Like this: 
+        \item[] The ``EventManager'' is a component which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. Having the events be static means that other components does not need a reference to the active ``EventManager'' in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a methos which takes the same parameters as the delegate type of the event, and append that method to the event. Like this: 
         \begin{lstlisting}[language=C]
 // Subscribe to event
 EventManager.Name_of_event += Name_of_function;
@@ -70,7 +76,7 @@ public ButtonEvent onButtonPressed;
 // "this" is in this case the UIButton instance
 onButtonPressed.Invoke(this);
         \end{lstlisting}
-        The ``MenuButton'' component just inherits from ``UIButton'' without altering or extending it in any way. The only reason it exists is to have a component name which indicates what kind of button this is. Other sub-classes of ``UIButton'' are ``ActionButton'' and ``ModeButton''. ``ActionButton'' is the most extended version. It adds functionality for blinking the buttons, as to hint which action to perform next, and it allows for action buttons to be multi-stepped. This means that when an action button which is set up as a multi-step action is pressed, it will enter an ``in progress'' state. And to complete this action, the next selection will be registered as the continuation of this action. ``ModeButton'' has only one addition, which is expose a field which can be used to specify what mode this button trigger.  
+        The ``MenuButton'' component just inherits from ``UIButton'' without altering or extending it in any way. The only reason it exists is to have a component name which indicates what kind of button this is. Other sub-classes of ``UIButton'' are ``ActionButton'' and ``ModeButton''. ``ActionButton'' is the most extended version. It adds functionality for blinking the buttons, as to hint which action to perform next, and it allows for action buttons to be multi-stepped. This means that when an action button which is set up as a multi-step action is pressed, it will enter an ``in progress'' state. And to complete this action, the next selection will be registered as the continuation of this action. ``ModeButton'' has only one addition, which is expose a field which can be used to specify what mode this button should trigger.  
         \end{itemize}    
         
 %SceneChanger
@@ -88,11 +94,50 @@ onButtonPressed.Invoke(this);
 
 \end{itemize}
 
+
+
 \subsubsection{Course Hub for Algorithms and Data Structures}
 The course hub for the algorithms and data structures course contains nothing more compared to the overworld scene. The only difference is the sub-class of ``SceneChanger'' used; ``AlgDatSceneChanger'' as opposed to ``MainSceneChanger''.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/AlgDatHub.png}
+\caption{The algorithms and data structures course hub.}
+\label{fig:algdathub}
+\end{figure}
+
 \subsubsection{Data Structures}
-The data structures scene is split into two parts. These are the play mode, and the use case mode. It starts out in the play mode. In this mode the player can choose between the stack and the queue structures, and then get a visual representation of what happens when data is added or removed to the selected structure. The bits common to both parts are:
+The data structures scene is split into two parts. These are the play mode and the use case modem, and can be seen in \autoref{fig:playstart}, \autoref{fig:playprogress}, \autoref{fig:usecasestart}, and \autoref{fig:usecaseprogress}. This scene starts out in the play mode. In this mode the player can choose between the stack and the queue structures, and then get a visual representation of what happens when data is added or removed to the selected structure. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/PlayStart.png}
+\caption{The play mode, before selecting a data structure.}
+\label{fig:playstart}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/PlayProgress.png}
+\caption{The play mode, after selecting the stack structure and pushing a few elements to it.}
+\label{fig:playprogress}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/UseCaseStart.png}
+\caption{The initial state of the use case mode.}
+\label{fig:usecasestart}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/UseCaseProgress.png}
+\caption{The use case mode after having done a few steps.}
+\label{fig:usecaseprogress}
+\end{figure}
+
+The bits common to both parts are:
 \begin{itemize}
     \item \textbf{\_FallbackGame}
     \item \textbf{PlayerPositioner}
@@ -155,15 +200,26 @@ The use case mode is more complex, and the following are the major pieces of it:
     \begin{itemize}
         \item[] ``UseCase'' is a component, and it does the opposite of the ``Play'' component, by hiding its belonging game objects when in play mode, and showing them when in use case mode. However, it also contains a lot more. It has references to all the parts in this part of the scene, all mentioned above, and it contains the logic for how and when the user can interact with them. 
     \end{itemize}
-    
-    \item \textbf{}
-    \begin{itemize}
-        \item[] 
-    \end{itemize}
+  
 \end{itemize}
 
 \subsubsection{Sorting Algorithms}
-The scene containing the sorting algorithms is the most complex of the scenes. 
+The scene containing the sorting algorithms is the most complex of the scenes. It can be seen in different states in \autoref{fig:sortingstart} and \autoref{fig:sortingselected}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/SortingStart.png}
+\caption{The initial state of the sorting algorithm scene.}
+\label{fig:sortingstart}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth, totalheight=0.4\textheight, keepaspectratio=true]{images/SortingSelected.png}
+\caption{The sorting algorithm scene, having selected the bubble sort algorithm and one of the array elements. Blue/turquoise elements or arrays are selected, yellow are not selected/normal, and green means that the element in this position has the value/size it should have when the sorting is complete.}
+\label{fig:sortingselected}
+\end{figure}
+
 Here are the interesting bits:
 \begin{itemize}
     \item \textbf{SortingManager}
@@ -213,7 +269,7 @@ Here are the interesting bits:
     
     \item \textbf{PartialArray and CombinedArray}
     \begin{itemize}
-        \item[] The ``PartialArray'' and ``CombinedArray'' components, were added alongside ``Arrays'' during the implementation of merge sort. These contain a reference to a prefab which lets them spawn a new array cube with its own elements. And they are used when splitting an array in two halves, and merging them back together. They contain similar logic to ``ArrayManager''.
+        \item[] The ``PartialArray'' and ``CombinedArray'' components, were added alongside ``Arrays'' during the implementation of merge sort. These contain a reference to a prefab which lets them spawn a new array cuboid with its own elements. And they are used when splitting an array in two halves, and merging them back together. They contain similar logic to ``ArrayManager''.
     \end{itemize}
     
     \item \textbf{SortingAlgorithm}
@@ -222,15 +278,6 @@ Here are the interesting bits:
  
     \end{itemize}
     
-    \item \textbf{}
-    \begin{itemize}
-        \item[] 
-    \end{itemize}
-    
-    \item \textbf{}
-    \begin{itemize}
-        \item[] 
-    \end{itemize}
 \end{itemize}
 
 \subsubsection{Animations}
@@ -261,206 +308,10 @@ StartCoroutine(SomeAnimation());
 
 The special part about these coroutines is that is executes code until it reaches a ``yield return ...'' statement, then it will stop executing, and then continue from where it left off at the next frame. There is no limit on the amount of ``yield return ...'' statements a coroutine can have. the value after ``yield return'' can be either null or one of several different types for waiting specific times until resuming execution, like a set amount of time in seconds, or at the end of the frame instead of the beginning of the frame, and so on. 
 
-\begin{comment}
-\subsubsection{Major Components}
-\label{sec:majorComponents}
-Now, it is time to explain the most crucial bits of the code. The different pieces will be classified as either one of these: 
-\begin{itemize}
-    \item A component - A C\# class inheriting from MonoBehaviour.
-    \item A prefab - A template for a game object which can be used to spawn predefined game objects at run-time or for speeding up the scene building process.
-    \item A class - A C\# class
-    \item An interface - A C\# interface
-\end{itemize}
-\end{comment}
 
-%\subsubsection*{LaserPointerPlayer} \label{subsubsec:LPP} 
-%The ``LaserPointerPlayer'' prefab was a modified version of the Player prefab which is shipped out of the box with Steam VR. The Player prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component was added to control this model. 
+\subsection{Evaluation}
 
-%\subsubsection*{\_FallbackGame}
-%``\_FallbackGame'' is a prefab, and it came to be after a bug found late in the development. Shortly explained, the \hyperref[subsubsec:LPP]{LaserPointerPrefab} prefab object would not be destroyed when changing scenes and there would be multiple of these when more than one scene was used. More on this in the next section. The purpose of this ``\_FallbackGame'' object was to check for a player and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
-
-%In the prototype the sorting algorithms are based around a "SortManager", an "EventManager", the "SortingElement", the "ISortingAlgorithm", and the "GameAction". 
-\begin{comment}
-\subsubsection*{SortingManger}
-The SortingManager is a component which basically glues everything together and keeps track handles most of the logic for the flow of the game. Basically the big boss commanding all its minions. This class is however dependent on a lot of other smaller components. This class does not know \textit{how} to do things, only \textit{what} to do. Therefore it must have references to the components which actually know \textit{how} to perform these actions or handle specific events. It does not only know \textit{what} to do, it also knows \textit{when this is allowed} to do. In other words, it keeps track of a bunch of states and when it is notified of some interaction happening, it will decide whether or not this is legal and act accordingly. 
-Some references it keeps are :
-\begin{itemize}
-    \item \hyperref[subsubsec:SortingAlgorithm]{SortingAlgorithm} - An algorithm which the array should be sorted after
-    \item \hyperref[subsubsec:Arrays]{Arrays} - Keeps track of all the arrays, and the logic for interacting with them
-    \item Comparison - Handles compare actions
-    \item TitleManager - Updates the title of the room to the current algorithm
-    \item StateManager - Shows the updated state of the algorithms internals
-    \item ActionManager - Handles the state of the Action buttons (active or not)
-    \item AlgoControlManager - Handles the state of the buttons controlling the algorithm(Demo, prev, and next)
-    \item MessagesManager - Shows messages to the player about things that are happening
-\end{itemize}
-
-%this needs a rewrite 
-\subsubsection*{Arrays and ElementAnimator} \label{subsubsec:Arrays}
-"Arrays" and "ElementAnimator" are components used in the sorting algorithms scene. They handle the logic of how the different actions affect the array(s) and their respectful animation definitions, and last but not least which array it should perform the action on. In the beginning they were the same component, but it got really big and I wanted to separate the Animations of the different actions with the logic behind them. And hence they became two. However, it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
-
-The "Arrays" component is also an evolution from "ArrayManager". As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the "Arrays" component was created. It stole the logic from "ArrayManager" and added some more to handle several arrays. The Arraymanager was cut down to only keep track of its elements. 
-So the history went like this:
-\begin{itemize}
-    \item ArrayManager
-    \item ArrayManager and Arrays
-    \item ArrayManager, Arrays and ElementAnimator
-\end{itemize}
-
-
-\subsubsection*{EventManager}
-The EventManager is a class which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. making the events static means that other components does not need a reference to the active EventManager in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a function which takes the same parameters as the delegate type of the event, and append that function to the event. Like this: 
-\begin{lstlisting}[language=C]
-// Subscribe to event
-EventManager.Name_of_event += Name_of_function;
-
-// Unsubscribe from event
-EventManager.Name_of_event -= Name_of_function;
-\end{lstlisting} 
-
-This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the LaserPointer, a component attached to the \hyperref[subsubsec:LPP]{LaserPointerPlayer} object, which gives the EventManager information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
-\end{comment}
-
-%\subsubsection*{SortingAlgorithm} \label{subsubsec:SortingAlgorithm}
-%SortingAlgorithm is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement, a set of virtual methods which already has a definition but can be overridden by the sub-classes, and a set of defined methods which will always be the same for all sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the GenerateActions method, and the CheckForFocusChange method. GenerateActions return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the GameActions needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm. The CheckForFocusChange method should send trigger an event in the EventManager when the algorithm reaches a state where there is a change in which elements are in focus.
-
-%\subsubsection*{GameAction}
-%GameAction is an abstract class which all actions that a user can perform inherits from. This class contains very little functionality as its reason for existing was to be able to group several different actions under the same type, such that collections could be made. By inheriting from this class one can also quite easily add new actions as well, though they also have to be defined in the SortManager, as these classes are only a representation of an action, and not the action itself. The functionality of the action is decided by the SortManager. In this way, the same action can be handled diffrently in another context, for example for tree traversal algorithms. 
-
-
-\subsubsection{Bugs and Stumbles}
-\todo{Not sure if this part should even be included...}
-% the problem of VR player not beeing deleted between scenes, and the solution to that
-
-Improper use of the player prefab from the Steam VR Plugin was the source of one of the bugs found during development of this prototype. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of my scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to create the  \_FallbackGame prefab, whose functionality is already described in the previous part. After this prefab was constructed, all that was left was just to replace the player prefab in all the scenes and add this prefab instead. Also, the ColorManagers, and EventManagers could be removed from the scenes, as they were included in the fallback prefab. This also made for a better architectural design as any changes to the ColorManager or EventManager would be applied instantly to all scenes by just altering the prefab, keeping colors and settings consistent across the game. 
-
-\subsubsection{Features}
-The following features were present in the final version of the prototype:
-
-\subsubsection*{Common to all scenes}
-\begin{itemize}
-    \item Player - A camera and controller reflecting the physical orientation and position of the player hand his/her hands/controllers. Also has a laser pointer in the right hand for interacting with the world
-    \item Show outline on interactive objects when hovering over with the laser pointer
-    \item Interact with interactive objects by pressing the trigger button on the controller with the laser pointer while pointing at it
-    \item Buttons - Interactive object
-    \item Show which buttons are disabled by changing their color, and the color of the outline when hover over
-\end{itemize}
-
-\subsubsection*{Over world}
-\begin{itemize}
-    \item Show available courses as different buttons
-    \item Course buttons - Loads the button's course
-    \begin{itemize}
-        \item Algorithms and Data Structures
-    \end{itemize}
-\end{itemize}
-
-\subsubsection*{Algorithms and Data Structures}
-\textbf{Course hub(entry point):}
-\begin{itemize}
-    \item Show available topics as buttons
-    \item \textbf{Topic buttons} - Loads the button's topic
-    \begin{itemize}
-        \item Data structures
-        \item Sorting algorithms
-    \end{itemize}
-    \item Back navigation button - Go back to the over world
-\end{itemize}
-
-\textbf{Data structures:}
-\begin{itemize}
-    \item \textbf{Play mode} - Learn how the selected structure works
-    \begin{itemize}
-        \item Show available structures as buttons
-        \item \textbf{Structure buttons} - Go to play mode for selected structure
-        \begin{itemize}
-            \item Stack
-            \item Queue
-        \end{itemize}
-        \item \textbf{Stack and Queue} - Same play mode
-        \begin{itemize}
-            \item Show a representation of the data structure
-            \item Push/Enqueue button - Animate how the structure handles addition of data
-            \item Pop/Dequeue button - Animate how the structure handles removal/retrieval of data
-            \item Use case button - Go to use case mode for this structure
-            \item Back navigation button - Go back to course hub
-            \item Show explanation of each button
-            \item Show error message when doing an illegal action containing the error (Overflow/Underflow) and when it occurs
-        \end{itemize}
-    \end{itemize}
-    \item \textbf{Use case mode} - See how the selected structure can be used in a real life scenario
-    \begin{itemize}
-        \item \textbf{Stack and Queue} - Same use case: Image region growing
-        \begin{itemize}
-            \item Back navigation button - Go back to play mode for this structure
-            \item Show a description of what this use case is when entering the use case mode. Press the button on this panel to hide it and start the algorithm.
-            \item Show a black and white image with random pattern. Each pixel is an interactive object.
-            \item Pixel(interactive object) - Select (show a border color to indicate that it is selected)
-            \item Show a representation of the data structure selected before entering use case mode
-            \item Show a representation of the the item from the data structure is currently being read/used ("Next" as it points to the next pixel to check)
-            \item Show a representation of the internal state of the algorithm (Pattern so far, visited pixels, which pixel is next, etc...)
-            \item Show an explanation of the color coding in the representation of the algorithm
-            \item \textbf{Action buttons}
-            \begin{itemize}
-                \item Push/Enqueue - Animate addition of the selected Pixel to the data structure
-                \item Pop/Dequeue - Animate removal of next pixel from the data structure and into the "Next" position. 
-                \item Check - Animate the checking(whether it is or is not part of the pattern) of the pixel.
-            \end{itemize}
-            \item \textbf{Algorithm interaction buttons}
-            \begin{itemize}
-                \item Demo(toggle button) - Start/stop the demonstration of the algorithm. The demonstration animates how the algorithm works step by step.
-                \item Prev - Undo the last step in the algorithm(animate)
-                \item Next - Do the next step in the algorithm(animate)
-            \end{itemize}
-            \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
-            \item Data items popped or dequeued into "Next" will fire a laser at the pixel it represents. To indicate which pixel should be checked next
-        \end{itemize}{}
-    \end{itemize}
-\end{itemize}
-
-\textbf{Sorting Algorithms}
-\begin{itemize}
-    \item Back navigation button - Go back to course hub
-    \item Show available sorting algorithms as buttons
-    \item Show the array as a horizontal set of cuboids(array elements) on top of another cuboid(array stand or representation of the memory location). The elements has a height relative to their value: high value means a tall cuboid, and a low value means a short cuboid.  
-    \item Both the array and the the elements are interactive
-    \item Show a Cube representing the storage (where array elements can be temporarily stored)
-    \item Show a representation of the internal state of the algorithm
-    \item Show pseudo code for the selected algorithm
-    \item \textbf{Sorting algorithm buttons} - Generates a new random array and changes to this algorithm
-    \begin{itemize}
-        \item Bubble sort
-        \item Insertion sort
-        \item Quick sort
-        \item Merge sort
-    \end{itemize}
-    \item \textbf{Algorithm interaction buttons}
-    \begin{itemize}
-        \item Demo(toggle button) - Start/stop demonstrating the algorithm. The demonstration shows the algorithm step by step in the correct order and explains what it is doing.
-        \item Prev - Undo the last step in the algorithm(animate)
-        \item Next - Do the next step in the algorithm(animate)
-        \item New array - Generate a new random array
-        \item Restart - Resets the algorithm, and array back to start    
-    \end{itemize}
-    \item \textbf{Action buttons}
-    \begin{itemize}
-        \item Compare - Compare the value of two elements
-        \item Swap - Swap the values/position of one or two element(s)
-        \item Store - Clone one of the elements in the array to the storage
-        \item Copy to - Two step action: Copy selected element value into the next selection (limitations: can not copy to storage, use Store instead)
-        \item Pivot - Sets the selected element as a pivot
-        \item Split - Splits the selected array in two halves
-        \item Merge - Start the merge of two arrays
-    \end{itemize}
-    \item An attempt at doing an action the algorithm does not expect, it will not perform the action and instead hint at the expected action by blinking the required elements and action button a few times. 
-    
-\end{itemize}
-
-
-
-\subsection{Testing}
-
-The testing was performed in mid May, and 9 people participated. As planned, the participants were given a short description of the game and its intentions to give them some context. They were also informed that they may ask questions if they get stuck, but refrain from doing this needlessly. After the explanation they were asked to equip the VR headset hand the controller, and play the game. Then they played until they felt that they had explored everything, or until they felt they had seen enough. Finally they were asked to fill out a google form. And during the last step some of the participants gave some oral feedback as well. This was all according to the plan presented in the method section. 
+The evaluation was performed in mid May, and 9 people participated. As planned, the participants were given a short description of the game and its intentions to give them some context. They were also informed that they may ask questions if they get stuck, but refrain from doing this needlessly. After the explanation they were asked to equip the VR headset hand the controller, and play the game. Then they played until they felt that they had explored everything, or until they felt they had seen enough. Finally they were asked to fill out a google form. And during the last step some of the participants gave some oral feedback as well. This was all according to the plan presented in the method section. 
 
 Let us see who the participants were. According to their answers in the google form, all of them were students, and all but one had previously taken the course ``Algorithms and data structures''. The majority of the participants had tried VR earlier, but were not very experienced with it. The details can be seen in \autoref{fig:student}, \autoref{fig:VRExp} and \autoref{fig:AlgDat}. 
 
@@ -485,7 +336,7 @@ Let us see who the participants were. According to their answers in the google f
 \label{fig:AlgDat}
 \end{figure}
 
-The results of the SUS gave an average score of 70.3. The average SUS score in general is 68, which means that the usability of this prototype scored above average. The participant which had not taken the course in the prototype gave a score of 85 which is the next highest score given. Only including the participants which had taken the course, made the average score drop to 68.4, which is only slightly above average. This is the almost the opposite result of the testing in the previous project. In that project the lowest score came from the participants not having taken the course, and the average rose when excluding these. 
+The results of the SUS gave an average score of 70.3. The average SUS score in general is 68, which means that the usability of this prototype scored above average. The participant which had not taken the course in the prototype gave a score of 85 which is the next highest score given. Only including the participants which had taken the course, made the average score drop to 68.4, which is only slightly above average. This is the almost the opposite result of the evaluation in the previous project. In that project the lowest score came from the participants not having taken the course, and the average rose when excluding these. 
 
 VR is infamous for its tendency to cause motion sickness in players, and some of the participants said they were experiencing this during the testing. In fact three out of the nine participants said that they felt some degree of motion sickness, which is 33.3\%. Some participants also felt other discomforts such as the game making them feel dumb, or due to other reasons. The details can be seen in \autoref{fig:discomfort}.
 
@@ -519,7 +370,7 @@ The thoughts of the participants in regards to using VR for teaching/learning we
 \label{fig:generalUseful}
 \end{figure}
 
-The general feed back given was that it was not clear that the user could do the steps in the algorithms manually. Most only used the ``Demo'' or ``Do next step'' buttons when playing the game. Some also said that a lot of things happened simultaneously and it was hard to know where to focus, specifically for the use case in the data structures scene.  
+The general feedback given was that it was not clear that the user could do the steps in the algorithms manually. Most only used the ``Demo'' or ``Do next step'' buttons when playing the game. Some also said that a lot of things happened simultaneously and it was hard to know where to focus, specifically for the use case in the data structures scene.  
 
 
 
