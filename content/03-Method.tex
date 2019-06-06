@@ -177,7 +177,226 @@ Following is a list of functional requirements for the project, sorted by the sc
 \end{itemize}
 
 \subsubsection{Implementation}
-This part will talk a bit about how the major parts in the game was coded, how they work, and how they interact with each other.
+This part will talk a bit about how the major parts in the game was coded, how they work, and how they interact with each other. The different pieces will be classified as either one of these: 
+\begin{itemize}
+    \item A component - A C\# class inheriting from MonoBehaviour.
+    \item A prefab - A template for a game object which can be used to spawn predefined game objects at run-time or for speeding up the scene building process.
+    \item A class - A C\# class.
+    \item An interface - A C\# interface.
+\end{itemize}
+
+Pieces common on for all scenes:
+\begin{itemize}
+    \item \textbf{LaserPointerPlayer} 
+    \begin{itemize}
+        \item[] The ``LaserPointerPlayer'' prefab was a modified version of the ``Player'' prefab which is shipped out of the box with Steam VR. The ``Player'' prefab controls the tracking of the controllers and the HMD. The modified version removed the hand models, and their gesture simulation as this is not needed for the interaction within the game. Instead the hand models were replaced by spheres and attached to the right hand was a laser pointer which is used for interaction. Along with this laser pointer model, a component(``LaserPointer'') was added to control this model. 
+    \end{itemize}
+    
+%fallback
+    \item \textbf{\_FallbackGame}
+    \begin{itemize}
+        \item[] ``\_FallbackGame'' is a prefab, and it came to be after a bug which was found late in the development. It was not found until very late in the process as the scenes were usually only tested individually, and not after transitioning from one to the other. As it turned out the player prefab was not destroyed on scene change, and every scene had one of these player prefabs, which meant there would be several player objects in the scene after the first scene was left. This was not obvious as most of the scenes had the player object in the exact same spot and they were just overlapping each other. However, when transitioning from a scene were this object was in another position than the previous scene, it became very obvious as one could see two laser pointers originating from different spots. The solution to this was to create this ``\_FallbackGame'' prefab. The purpose of this ``\_FallbackGame'' object was to check for a player(a ``LaserPointerPlayer'' prefab) and if there was none, instantiate one, else, destroy itself. This made it possible to start the game from any scene and still visit other scenes without getting multiple players, and without only having a player in one of the scenes. This was the initial function of this prefab, but since there would only ever be one of these objects, the opportunity arose to move all other components which were required by all scenes into this same object. Kind of making it into the core of the game, and hence the name ``\_FallbackGame'', where ``Fallback'' comes from the part where it checks whether or not it is needed, and ``Game'' coming from the contents being all the stuff required everywhere within the game. The contents are, excluding the player, the ``EventManager'' and the ``ColorManager'' components, as of the time of writing. 
+    \end{itemize}
+    
+    
+%eventmanager
+    \item \textbf{EventManager}
+    \begin{itemize}
+        \item[] The ``EventManager'' is a component which contains every event which could happen in the game, and allows other classes or components to subscribe to these events. The events are set up with delegate types for the different types of events, and matching static events using these delegate types. Having the events be static means that other components does not need a reference to the active ``EventManager'' in order to subscribe to events. Then, all a component need to do in order to subscribe to an event is to define a methos which takes the same parameters as the delegate type of the event, and append that method to the event. Like this: 
+        \begin{lstlisting}[language=C]
+// Subscribe to event
+EventManager.Name_of_event += Name_of_function;
+
+// Unsubscribe from event
+EventManager.Name_of_event -= Name_of_function;
+        \end{lstlisting} 
+        This component also has the responsibility to handle the laser pointer and the interaction with the controllers. It has a reference to the ``LaserPointer'', a component attached to the ``LaserPointerPlayer'' object, which gives the ``EventManager'' information about the position and orientation of the pointer. Every frame it then uses this information to fire a ray cast from the tip of the laser pointer in the direction it faces. After that it uses the result of the ray cast in order to check whether it is pointing at an interactive object. If it is pointing at an interactive object, it will trigger the hover effect of that object, and if the player is also pressing the trigger button while pointing at this interactive object, it will fire the appropriate event according to the type of interactive object. 
+    \end{itemize}
+    
+%colormanager
+    \item \textbf{ColorManager}
+    \begin{itemize}
+        \item[] ``ColorManager'' is a simple component. All it does is provide a way to define colors in the Unity inspector and expose a static instance of this object. This public static object reference makes the defined colors available anywhere within the scene without having to instantiate an instance of this class or having a reference to one. It is also set up to have a Singleton architecture, meaning that there will only ever be a maximum of one instance of this class at any given time. 
+    \end{itemize}
+    
+%uibutton
+    \item \textbf{UIButton}
+    \begin{itemize}
+        \item[] ``UIButton'' is an abstract component. The ``UIButton'' component's function is to provide an animation for pressing it, and also give the possibility to add methods to trigger when it is pressed. Methods can either be added through code, or through the inspector in Unity. To achieve this possibility an event class inheriting from the generic ``UnityEvent\textless T\textgreater'' class was created, internally in the ``UIButton'' class. The ``T'' can be replaced with whatever type you want to pass to this event. In this case:
+        \begin{lstlisting}[language=C]
+[Serializable]
+public class ButtonEvent: UnityEvent<UIButton> { }
+
+public ButtonEvent onButtonPressed;
+        \end{lstlisting}
+        As we can see, the ``ButtonEvent'' inherits from ``UnityEvent\textless UIButton\textgreater''. This means that methods subscribed to this event will get a ``UIButton'' instance passed to them. This was to ensure that any property or functionality of any sub-classes of ``UIButton'' could be used if needed. The ``UIButton'' class itself, however, contains no useful information to be used by the subscribed method. The ``[Serializable]'' part along with the public ``ButtonEvent'' variable, enables the subscriptions to be done trough the Unity inspector. Calling all the subscribed methods is just a matter of calling the ``Invoke'' method and passing an instance of the required type along with it. like this:
+        \begin{lstlisting}[language=C]
+// "this" is in this case the UIButton instance
+onButtonPressed.Invoke(this);
+        \end{lstlisting}
+        
+        Sub-classes of ``UIButton'' are ``MenuButton'', ``ActionButton'', and ``ModeButton''. ``MenuButton'' just inherits from ``UIButton'' without altering or extending it in any way. The only reason it exists is to have a component name which indicates what kind of button this is.``ActionButton'' is the most extended version. It adds functionality for blinking the buttons, as to hint which action to perform next, and it allows for action buttons to be multi-stepped. This means that when an action button which is set up as a multi-step action is pressed, it will enter an ``in progress'' state. And to complete this action, the next selection will be registered as the continuation of this action. ``ModeButton'' has only one addition, which is expose a field which can be used to specify what mode this button should trigger.  
+        \end{itemize}    
+        
+%SceneChanger
+    \item \textbf{SceneChanger}
+    \begin{itemize}
+        \item[] ``SceneChanger'' is an abstract component. All it does is provide a method for transitioning to another scene by fading to black and then fading back in to the new scene. To do this it utilizes the ``SteamVR\_LoadLevel.Begin()'' method, provided by the SteamVR plugin, passing the name of the scene to load and the duration of the fade as parameters.
+        
+        Current sub-classes are: ``MainSceneChanger'', and ``AlgDatSceneChanger''.
+    \end{itemize}
+    
+    \item \textbf{PlayerPositioner}
+    \begin{itemize}
+        \item[] ``PlayerPositioner'' is a component. Its function is to find the player and position it at the location of the game object this component is attached to, when the scene starts. This means that the ``\_FallbackPlayer'' prefab can be placed anywhere in the scene as long as there a ``PlayerPositioner'' component at the position where the player should be. 
+    \end{itemize}
+    
+    
+\end{itemize}
+
+The overworld and course hub for ``Algorithms and data structures'' does not contain any pieces which are exclusive to their scenes. They only use what they need from the common components listed above. The sorting algorithms scene and data structures scene on the other hand, does have exclusive parts. The data structures scene is split into two modes; play mode and use case mode, and these are the important parts from both modes:
+
+\begin{itemize}
+    \item \textbf{Stage}
+    \begin{itemize}
+        \item[] The ``Stage'' component exposes methods for switching between the play- and use case modes, and makes sure both these modes are updated with the correct data structure to use(the chosen structure). 
+    \end{itemize}
+    
+    \item \textbf{DStack}
+    \begin{itemize}
+        \item[] ``DStack'' is a component, and the naming of this is not very representative of what it does. It actually contains all the logic for both the stack and the queue. Originally it was split into two but realizing that they were very similar and that only a boolean value was needed to tell them apart, they were merged, and the ``DStack'' was arbitrarily chosen over the ``DQueue'', and it was never renamed to fit its contents better. Its contents are definitions for animations for both the stack and the queue in regards to adding and removing data, exposes methods for triggering these animations, keeps references to a few positions it uses for animations, and it keeps track of how many data items it holds and can hold. 
+    \end{itemize}
+
+    \item \textbf{Play}
+    \begin{itemize}
+        \item[] ``Play'' is a component, which sets the ``DStack'' in the correct mode, based on the selected data structure. It also makes sure all of the game objects within the play mode is shown when in play mode, and hidden when in use case mode. 
+    \end{itemize}
+    
+%RegionGrowingAlgorithm
+    \item \textbf{RegionGrowAlgorithm}
+    \begin{itemize}
+        \item[] The class ``RegionGrowAlgorithm'' generates a list of actions needed to be performed to extract the connected region/pattern in the image based on a seed point within the image. It exposes methods for retrieving these actions and this enables the game to perform the algorithm one step at a time. 
+    \end{itemize}
+
+%ImageHandler
+    \item \textbf{ImageHandler}
+    \begin{itemize}
+        \item[] The ``ImageHandler'' component, is responsible for creating a two dimensional array of ``Pixel'' prefabs to represent an image. It also generates a random pattern in this image, and exposes methods for retrieving individual pixels and for selecting them. The ``Pixel'' prefab contains a cube mesh and the ``Pixel'' component, which has a boolean value which controls weather this pixel is black or white. The ``Pixel'' component is one of the components the ``EventHandler'' component looks for when pointing the laser pointer, making pixels selectable/interactive. 
+    \end{itemize}
+    
+%DataStructure
+    \item \textbf{DataStructure}
+    \begin{itemize}
+        \item[] The ``DataStructure'' component does alot of the same as the ``DStack'' component, except it is modified to make the animations fit this part of the scene and with a few additions. 
+    \end{itemize}
+    
+%ImageRep
+    \item \textbf{ImageRep}
+    \begin{itemize}
+        \item[] ``ImageRep'' is a component which generates a representation of the state within the algorithm. It does so by generating a miniature version of the image, but without the pattern. The colors of each pixel represents the state of it, and it can be one of the following: unvisited(default), visited, seed, next, added to stack/queue, or part of patter. It also shows a legend of all the colors and their meaning.
+    \end{itemize}
+    
+%PatternRep
+    \item \textbf{PatternRep}
+    \begin{itemize}
+        \item[] The ``PatterRep'' component is similar to the ``ImageRep'' but in contrast only has two states: part of patter, or not. It shows which pixels are confirmed as part of a region or pattern this far in the algorithm.
+    \end{itemize}
+
+%usecase
+    \item \textbf{UseCase}
+    \begin{itemize}
+        \item[] ``UseCase'' is a component, and it does the opposite of the ``Play'' component, by hiding its belonging game objects when in play mode, and showing them when in use case mode. However, it also contains a lot more. It has references to all the parts in this part of the scene, all mentioned above, and it contains the logic for how and when the user can interact with them. 
+    \end{itemize}
+\end{itemize}
+
+The sorting algorithms scene is the most complex scene and these are the most important pieces:
+
+\begin{itemize}
+    \item \textbf{SortingManager}
+    \begin{itemize}
+        \item[] The SortingManager is a component which basically glues everything together, and keeps track of and handles most of the logic for the flow of the game. Basically the big boss commanding all its minions. This class is however dependent on a lot of other smaller components. This class does not know \textit{how} to do things, only \textit{what} to do. Therefore it must have references to the components which actually know \textit{how} to perform these actions or handle specific events. It does not only know \textit{what} to do, it also knows \textit{when this is allowed} to do. In other words, it keeps track of a bunch of states and when it is notified of some interaction happening, it will decide whether or not this is legal and act accordingly. 
+        Some references it keeps are :
+        \begin{itemize}
+            \item SortingAlgorithm - An algorithm which the array should be sorted after
+            \item Arrays - Keeps track of all the arrays, and the logic for interacting with them
+            \item Comparison - Handles compare actions
+            \item TitleManager - Updates the title of the room to the current algorithm
+            \item StateManager - Shows the updated state of the algorithms internals
+            \item ActionManager - Handles the state of the Action buttons (active or not)
+            \item AlgoControlManager - Handles the state of the buttons controlling the algorithm(Demo, prev, and next)
+            \item MessagesManager - Shows messages to the player about things that are happening
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Selectable}
+    \begin{itemize}
+        \item[] ``Selectable'' is an abstract component, which is the parent class for all selectable game objects in this scene except for the buttons. The selectable class contains everything which is common for all these objects, namely that they can be selected, and a few other things. Current sub-classes are the ``ArrayManager'', ``SortingElement'', ``EmptyElement'', and ``PartialArray'' components. These can all be selected and performed actions on. 
+    \end{itemize}
+    
+    \item \textbf{SortingElement}
+    \begin{itemize}
+        \item[] ``SortingElement'' is both a prefab, and component, which is also attached to this prefab. The prefab contains a cube mesh to represent the array element, text to show which element this is, and a ``SortingElement'' component. This component contains some information about the element which is useful or needed by other components when performing actions on these. It is also as mentioned a sub-class of ``Selectable''.
+    \end{itemize}
+    
+    
+    \item \textbf{ArrayManager}
+    \begin{itemize}
+        \item[] The ``ArrayManager'' component used to be the main component in terms of keeping track of all the ``SortingElement'' game objects, animating their positions and sizes, and expose methods for performing these actions. It is now reduced to only keeping track of its belonging elements, and exposes methods for getting these elements. The new main component for the arrays and elements now, is ``Arrays''.
+    \end{itemize}
+    
+    \item \textbf{Arrays}
+    \begin{itemize}
+        \item[]``Arrays'' is a component. It handles the logic of how the different actions affect the array(s), and last but not least which array it should perform the action on. In the beginning this component contained all the animations for the arrays and array elements too, but it got really big and I wanted to separate the animations of the different actions with the logic behind them. And hence the ``ElementAnimator'' was born. However, it turned out some of the logic still had to happen within the animation and are therefore not completely separate after all... Nevertheless, it turned out to be helpful in terms of navigating the code, when all the animation logic was in one file, while most of the logic was in the other.
+
+        The ``Arrays'' component is also an evolution from ``ArrayManager''. As I added the merge sort algorithm there was need for more than one array, and therefore the ArrayManager which was doing everything for the original array was not sufficient any more. Hence the ``Arrays'' component was created. It stole the logic from ``ArrayManager'' and added some more to handle several arrays. The ``ArrayManager'' was cut down to only keep track of its elements. 
+        So the history went like this:
+        \begin{itemize}
+            \item ArrayManager
+            \item ArrayManager and Arrays
+            \item ArrayManager, Arrays and ElementAnimator
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{PartialArray and CombinedArray}
+    \begin{itemize}
+        \item[] The ``PartialArray'' and ``CombinedArray'' components, were added alongside ``Arrays'' during the implementation of merge sort. These contain a reference to a prefab which lets them spawn a new array cuboid with its own elements. And they are used when splitting an array in two halves, and merging them back together. They contain similar logic to ``ArrayManager''.
+    \end{itemize}
+    
+    \item \textbf{SortingAlgorithm}
+    \begin{itemize}
+        \item[] ``SortingAlgorithm'' is an abstract class, and defines a set of abstract methods which all sub-classes needs to implement, a set of virtual methods which already has a definition but can be overridden by the sub-classes, and a set of defined methods which will always be the same for all sub-classes. Having this abstract class makes adding new algorithms a lot faster, as a lot of the code for each algorithm would be the same. It also makes the addition of new algorithms less error prone, as the core is already there for each algorithm and only what is specific for the algorithm needs to be added. The abstract methods are the ``GenerateActions'' method, and the ``CheckForFocusChange'' method. ``GenerateActions'' return Void and takes no parameters. It is called in the constructor and the intention of this method is to add all the ``GameActions'' needed to sort the array in the correct order and with the correct indexes to the actions list, as well as add an equal number of states to the states list to let the user peek inside the state of the algorithm. The ``CheckForFocusChange'' method should trigger an event in the ``EventManager'' when the algorithm reaches a state where there is a change in which elements are in focus.
+ 
+    \end{itemize}
+\end{itemize}
+
+
+A lot of the components explained above mention animations, and that they keep definitions of animations, and ways to trigger them. However, none explain how they are defined and how they work. The animations were coded, and the way the animations were coded was by using coroutines. Couroutines are a part of the ``UnityEngine'' library, and they work by defining a method with a return type of ``IEnumerator'', and should contain the code for doing the animation, i.e move, rotate, and or scale objects. And to start the defined animation one needs to call the ``StartCoroutine'' method and provide the animation function as a parameter to that function. 
+Like this:
+\begin{lstlisting}[language=C]
+IEnumerator SomeAnimation(){
+    float duration = .6f;
+    float elapsed = 0f;
+    float prevTime = Time.time;
+    //This while loop will run one iteration of the loop every frame for .6 seconds. This way of writing the coroutine makes the animation's duration independent of the frame-rate
+    while(elapsed < duration){
+        // Do something every frame here
+        ...
+        float time = Time.time;
+        elapsed += time - prevTime;
+        prevTime = time;
+        yield return null;
+    }
+    //Do something at the end of the animation here
+    ...
+}
+
+...
+// Somewere inside a function which should trigger the SomeAnimation animation
+StartCoroutine(SomeAnimation());
+\end{lstlisting}
+
+The special part about these coroutines is that is executes code until it reaches a ``yield return ...'' statement, then it will stop executing, and then continue from where it left off at the next frame. There is no limit on the amount of ``yield return ...'' statements a coroutine can have. the value after ``yield return'' can be either null or one of several different types for waiting specific times until resuming execution, like a set amount of time in seconds, or at the end of the frame instead of the beginning of the frame, and so on. 
+
 
 \subsection{Evaluation}
-The evaluation in this project will be fairly similar to the form of evaluation performed in the previous project, whose form was briefly touched upon in the Previous Work section.  This time there will be a short explanation before the evaluation starts about what the game is, and its intentions. It will give the participants some context in the form of what they can expect in terms of genre and setting. After the introduction of the game, they will play the game. No one will give guidance to them unless they explicitly ask for help. If a participant asks for help, it is a sign that some part of the game is not intuitive or something should be better explained within the game. The participants will be informed of this, to increase the threshold for asking for help. After the participants feel they have done enough, they will be asked to fill out a form. This form will contain a section regarding some background information of the participant, a part with the standard SUS questions for getting a usability score, and some general feedback regarding the game and their experience with it. The targets for this evaluation will be people who has taken or is taking the Algorithms and data structures course, as well as people who has not taken the course but has some experience and knowledge of programming. The level of VR experience a participant has is not of much importance, though a varied spectrum could be nice. This would open up the possibility to check for a connection between previous experience with VR and their understanding of the prototype. As already mentioned the previous project was only able to perform the testing with five people. This time around, the aim is to at least perform tests with double the amount of people.
+The evaluation in this project will be fairly similar to the form of evaluation performed in the previous project, whose form was briefly touched upon in the Previous Work section.  This time there will be a short explanation before the evaluation starts about what the game is, and its intentions. It will give the participants some context in the form of what they can expect in terms of genre and setting. After the introduction of the game, they will play the game, or in other words perform a user test. No one will give guidance to them unless they explicitly ask for help. If a participant asks for help, it is a sign that some part of the game is not intuitive or something should be better explained within the game. The participants will be informed of this, to increase the threshold for asking for help. After the participants feel they have done enough, they will be asked to fill out a form. This form will contain a section regarding some background information of the participant, a part with the standard SUS questions for getting a usability score, and some general feedback regarding the game and their experience with it. The targets for this evaluation will be people who has taken or is taking the Algorithms and data structures course, as well as people who has not taken the course but has some experience and knowledge of programming. The level of VR experience a participant has is not of much importance, though a varied spectrum could be nice. This would open up the possibility to check for a connection between previous experience with VR and their understanding of the prototype. As already mentioned the previous project was only able to perform the testing with five people. This time around, the aim is to at least perform tests with double the amount of people.
